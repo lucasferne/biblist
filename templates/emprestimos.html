@@ -1,0 +1,1050 @@
+{% extends "base.html" %} {% block title %} Empréstimos - Biblioteca {% endblock
+%} {% block content %}
+
+<div class="pagina-emprestimos">
+  <header class="pagina-cabecalho">
+    <div>
+      <div class="pagina-breadcrumb">
+        <span>Biblioteca</span>
+        <span>›</span>
+        <span>Empréstimos</span>
+      </div>
+
+      <h1 class="pagina-titulo">Empréstimos</h1>
+
+      <p class="pagina-subtitulo">Gerenciamento dos empréstimos de livros.</p>
+    </div>
+  </header>
+
+  <!-- =====================================================
+     NOVO EMPRÉSTIMO
+====================================================== -->
+
+  <section class="secao secao-recolhivel">
+    <button
+      type="button"
+      class="secao-recolhivel-cabecalho"
+      onclick="alternarNovoEmprestimo()"
+    >
+      <div>
+        <h2 class="secao-titulo">Novo empréstimo</h2>
+
+        <p class="secao-subtitulo">
+          Informe os dados para registrar um novo empréstimo.
+        </p>
+      </div>
+
+      <span id="icone-novo-emprestimo" class="secao-recolhivel-icone"> ▼ </span>
+    </button>
+
+    <div id="novo-emprestimo-conteudo" class="secao-recolhivel-conteudo">
+      <form
+        action="/emprestimos/cadastrar"
+        method="POST"
+        class="formulario"
+        id="formulario-novo-emprestimo"
+      >
+        <div class="formulario-grade">
+          <!-- ALUNO -->
+
+          <div class="formulario-grupo">
+            <label for="matricula"> Matrícula </label>
+
+            <input
+              type="text"
+              id="matricula"
+              name="matricula"
+              placeholder="Digite a matrícula..."
+              autocomplete="off"
+              required
+            />
+          </div>
+
+          <div class="formulario-grupo">
+            <label for="nome"> Nome </label>
+
+            <input
+              type="text"
+              id="nome"
+              name="nome"
+              placeholder="Nome completo"
+              required
+            />
+          </div>
+
+          <div class="formulario-grupo">
+            <label for="turma"> Turma </label>
+
+            <input
+              type="text"
+              id="turma"
+              name="turma"
+              placeholder="Ex.: 8º A"
+              required
+            />
+          </div>
+
+          <div class="formulario-grupo">
+            <label for="telefone"> Telefone </label>
+
+            <input
+              type="text"
+              id="telefone"
+              name="telefone"
+              placeholder="(00) 00000-0000"
+            />
+          </div>
+
+          <!-- LIVRO -->
+
+          <div class="formulario-grupo formulario-grupo-largo">
+            <label for="livro_pesquisa"> Livro </label>
+
+            <input
+              type="text"
+              id="livro_pesquisa"
+              placeholder="Digite o nome do livro..."
+              autocomplete="off"
+              required
+            />
+
+            <input type="hidden" id="livro_id" name="livro_id" />
+
+            <div id="resultados_livros"></div>
+          </div>
+
+          <!-- DATAS -->
+
+          <div class="formulario-grupo">
+            <label for="data_emprestimo"> Data do empréstimo </label>
+
+            <input
+              type="date"
+              id="data_emprestimo"
+              name="data_emprestimo"
+              required
+            />
+          </div>
+
+          <div class="formulario-grupo">
+            <label for="data_devolucao_prevista"> Devolução prevista </label>
+
+            <input
+              type="date"
+              id="data_devolucao_prevista"
+              name="data_devolucao_prevista"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="formulario-acoes">
+          <button type="submit" class="botao botao-principal">
+            Registrar empréstimo
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- =====================================================
+         PESQUISA
+         ===================================================== -->
+
+  <section class="secao">
+    <div class="secao-cabecalho">
+      <div>
+        <h2 class="secao-titulo">Pesquisar empréstimos</h2>
+
+        <p class="secao-subtitulo">
+          Consulte por livro, aluno, matrícula, turma ou status.
+        </p>
+      </div>
+    </div>
+
+    <form action="/emprestimos" method="GET" class="pesquisa-formulario">
+      <div class="pesquisa-campo">
+        <label for="pesquisa" class="campo-pesquisa-label"> Pesquisa </label>
+
+        <input
+          type="text"
+          id="pesquisa"
+          name="pesquisa"
+          class="campo-input"
+          value="{{ pesquisa }}"
+          placeholder="Livro, autor, matrícula, aluno, turma, status..."
+        />
+      </div>
+
+      <button type="submit" class="botao botao-principal">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="m20 20-4-4"></path>
+        </svg>
+
+        <span>Pesquisar</span>
+      </button>
+
+      {% if pesquisa %}
+
+      <a href="/emprestimos" class="botao botao-secundario"> Limpar </a>
+
+      {% endif %}
+    </form>
+  </section>
+
+  <!-- =====================================================
+         EMPRÉSTIMOS CADASTRADOS
+         ===================================================== -->
+
+  <section class="secao">
+    <div class="secao-cabecalho">
+      <div>
+        <h2 class="secao-titulo">Empréstimos cadastrados</h2>
+
+        {% if pesquisa %}
+
+        <p class="secao-subtitulo">
+          Resultados para:
+          <strong>"{{ pesquisa }}"</strong>
+        </p>
+
+        {% else %}
+
+        <p class="secao-subtitulo">Empréstimos registrados no sistema.</p>
+
+        {% endif %}
+      </div>
+
+      {% if emprestimos %}
+
+      <span class="lista-contador">
+        {{ emprestimos|length }} {% if emprestimos|length == 1 %} empréstimo {%
+        else %} empréstimos {% endif %}
+      </span>
+
+      {% endif %}
+    </div>
+
+    {% if emprestimos %}
+
+    <div class="tabela-container">
+      <table
+        class="tabela tabela-emprestimos tabela-redimensionavel"
+        id="tabela-emprestimos"
+      >
+        <colgroup>
+          <col data-coluna="livro" />
+          <col data-coluna="matricula" />
+          <col data-coluna="aluno" />
+          <col data-coluna="turma" />
+          <col data-coluna="emprestimo" />
+          <col data-coluna="devolucao" />
+          <col data-coluna="status" />
+          <col data-coluna="acoes" />
+        </colgroup>
+
+        <thead>
+          <tr>
+            <th data-coluna="livro">
+              <div class="cabecalho-coluna">
+                <span>Livro</span>
+                <span
+                  class="redimensionador"
+                  data-redimensionar="livro"
+                  aria-hidden="true"
+                ></span>
+              </div>
+            </th>
+
+            <th data-coluna="matricula">
+              <div class="cabecalho-coluna">
+                <span>Matrícula</span>
+                <span
+                  class="redimensionador"
+                  data-redimensionar="matricula"
+                  aria-hidden="true"
+                ></span>
+              </div>
+            </th>
+
+            <th data-coluna="aluno">
+              <div class="cabecalho-coluna">
+                <span>Aluno</span>
+                <span
+                  class="redimensionador"
+                  data-redimensionar="aluno"
+                  aria-hidden="true"
+                ></span>
+              </div>
+            </th>
+
+            <th data-coluna="turma">
+              <div class="cabecalho-coluna">
+                <span>Turma</span>
+                <span
+                  class="redimensionador"
+                  data-redimensionar="turma"
+                  aria-hidden="true"
+                ></span>
+              </div>
+            </th>
+
+            <th data-coluna="emprestimo">
+              <div class="cabecalho-coluna">
+                <span>Empréstimo</span>
+                <span
+                  class="redimensionador"
+                  data-redimensionar="emprestimo"
+                  aria-hidden="true"
+                ></span>
+              </div>
+            </th>
+
+            <th data-coluna="devolucao">
+              <div class="cabecalho-coluna">
+                <span>Devolução</span>
+                <span
+                  class="redimensionador"
+                  data-redimensionar="devolucao"
+                  aria-hidden="true"
+                ></span>
+              </div>
+            </th>
+
+            <th data-coluna="status">
+              <div class="cabecalho-coluna">
+                <span>Status</span>
+                <span
+                  class="redimensionador"
+                  data-redimensionar="status"
+                  aria-hidden="true"
+                ></span>
+              </div>
+            </th>
+
+            <th data-coluna="acoes">
+              <div class="cabecalho-coluna">
+                <span>Ações</span>
+              </div>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for emprestimo in emprestimos %}
+
+          <tr>
+            <!-- LIVRO -->
+
+            <td>
+              <div class="tabela-celula-ellipsis">
+                <span class="tabela-texto-principal">
+                  {{ emprestimo.livro.titulo }}
+                </span>
+
+                <span class="tabela-texto-secundario">
+                  {{ emprestimo.livro.autor }}
+                </span>
+              </div>
+            </td>
+
+            <!-- MATRÍCULA -->
+
+            <td>
+              <span class="tabela-celula-ellipsis tabela-id">
+                {{ emprestimo.aluno.matricula }}
+              </span>
+            </td>
+
+            <!-- ALUNO -->
+
+            <td>
+              <span class="tabela-celula-ellipsis tabela-texto-principal">
+                {{ emprestimo.aluno.nome }}
+              </span>
+            </td>
+
+            <!-- TURMA -->
+
+            <td>
+              <span class="tabela-celula-ellipsis">
+                {{ emprestimo.aluno.turma }}
+              </span>
+            </td>
+
+            <!-- DATA DO EMPRÉSTIMO -->
+
+            <td>
+              <span class="tabela-data">
+                {{ emprestimo.data_emprestimo.strftime('%d/%m/%Y') }}
+              </span>
+            </td>
+
+            <!-- DEVOLUÇÃO -->
+
+            <td>
+              {% if emprestimo.status == "devolvido" %}
+
+              <span class="data-devolucao data-devolucao-verde">
+                {{ emprestimo.data_devolucao.strftime('%d/%m/%Y') }}
+              </span>
+
+              {% elif emprestimo.status == "atrasado" %}
+
+              <span class="data-devolucao data-devolucao-vermelha">
+                {{ emprestimo.data_devolucao_prevista.strftime('%d/%m/%Y') }}
+              </span>
+
+              {% elif emprestimo.status == "emprestado" %}
+
+              <span class="data-devolucao data-devolucao-amarela">
+                {{ emprestimo.data_devolucao_prevista.strftime('%d/%m/%Y') }}
+              </span>
+
+              {% else %}
+
+              <span class="data-devolucao"> — </span>
+
+              {% endif %}
+            </td>
+
+            <!-- STATUS -->
+
+            <td>
+              {% if emprestimo.status == "emprestado" %}
+
+              <span class="status status-emprestado"> Emprestado </span>
+
+              {% elif emprestimo.status == "devolvido" %}
+
+              <span class="status status-devolvido"> Devolvido </span>
+
+              {% elif emprestimo.status == "atrasado" %}
+
+              <span class="status status-atrasado"> Atrasado </span>
+
+              {% else %}
+
+              <span class="status"> {{ emprestimo.status }} </span>
+
+              {% endif %}
+            </td>
+
+            <!-- AÇÕES -->
+
+            <td>
+              <div class="tabela-acoes">
+                <!-- VER DETALHES -->
+
+                <a
+                  href="/emprestimos/detalhes/{{ emprestimo.id }}"
+                  class="botao botao-icone"
+                  title="Ver detalhes"
+                  aria-label="Ver detalhes"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path
+                      d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"
+                    ></path>
+                    <circle cx="12" cy="12" r="2.5"></circle>
+                  </svg>
+                </a>
+
+                <!-- REGISTRAR DEVOLUÇÃO -->
+
+                {% if emprestimo.status == "emprestado" or emprestimo.status ==
+                "atrasado" %}
+
+                <form
+                  action="/emprestimos/devolver/{{ emprestimo.id }}"
+                  method="POST"
+                  class="tabela-formulario"
+                  onsubmit="confirmarDevolucao(
+                                        event,
+                                        this,
+                                        '{{ emprestimo.livro.titulo|e }}'
+                                    )"
+                >
+                  <button
+                    type="submit"
+                    class="botao botao-icone botao-devolver"
+                    title="Registrar devolução"
+                    aria-label="Registrar devolução"
+                  >
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M3 12h14"></path>
+                      <path d="M13 7l5 5-5 5"></path>
+                      <path d="M21 5v14"></path>
+                    </svg>
+                  </button>
+                </form>
+
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {% else %}
+
+    <div class="estado-vazio">
+      <div class="estado-vazio-icone">📚</div>
+
+      {% if pesquisa %}
+
+      <h3 class="estado-vazio-titulo">Nenhum empréstimo encontrado</h3>
+
+      <p class="estado-vazio-descricao">
+        Nenhum empréstimo corresponde à pesquisa "{{ pesquisa }}".
+      </p>
+
+      {% else %}
+
+      <h3 class="estado-vazio-titulo">Nenhum empréstimo cadastrado</h3>
+
+      <p class="estado-vazio-descricao">
+        Ainda não existem empréstimos registrados no sistema.
+      </p>
+
+      {% endif %}
+    </div>
+
+    {% endif %}
+  </section>
+</div>
+
+<script>
+  function confirmarDevolucao(evento, formulario, tituloLivro) {
+    evento.preventDefault();
+
+    mostrarConfirmacao(
+      "Confirmar devolução",
+      `Deseja realmente registrar a devolução do livro "${tituloLivro}"?`,
+      function () {
+        formulario.submit();
+      },
+    );
+  }
+
+  /* ============================================================
+   REDIMENSIONAMENTO DAS COLUNAS
+   ============================================================ */
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const tabela = document.getElementById("tabela-emprestimos");
+
+    if (!tabela) {
+      return;
+    }
+
+    const colunas = Array.from(tabela.querySelectorAll("colgroup col"));
+
+    const redimensionadores = tabela.querySelectorAll(".redimensionador");
+
+    const chaveStorage = "biblioteca-emprestimos-colunas";
+
+    const largurasMinimas = {
+      livro: 180,
+      matricula: 85,
+      aluno: 120,
+      turma: 70,
+      emprestimo: 105,
+      devolucao: 105,
+      status: 95,
+      acoes: 82,
+    };
+
+    function obterLargurasSalvas() {
+      try {
+        const dados = localStorage.getItem(chaveStorage);
+
+        if (!dados) {
+          return null;
+        }
+
+        return JSON.parse(dados);
+      } catch (erro) {
+        return null;
+      }
+    }
+
+    function salvarLarguras() {
+      const larguras = {};
+
+      colunas.forEach(function (coluna) {
+        const nome = coluna.dataset.coluna;
+
+        larguras[nome] = coluna.getBoundingClientRect().width;
+      });
+
+      try {
+        localStorage.setItem(chaveStorage, JSON.stringify(larguras));
+      } catch (erro) {
+        // O funcionamento continua normalmente
+        // mesmo que o navegador bloqueie o armazenamento.
+      }
+    }
+
+    function aplicarLargurasIniciais() {
+      const largurasSalvas = obterLargurasSalvas();
+
+      if (largurasSalvas) {
+        const larguraTabela = tabela.getBoundingClientRect().width;
+
+        const larguraTotalSalva = Object.values(largurasSalvas).reduce(
+          function (total, largura) {
+            return total + largura;
+          },
+          0,
+        );
+
+        if (larguraTotalSalva > 0 && larguraTabela > 0) {
+          colunas.forEach(function (coluna) {
+            const nome = coluna.dataset.coluna;
+
+            if (largurasSalvas[nome]) {
+              coluna.style.width =
+                (largurasSalvas[nome] / larguraTotalSalva) * 100 + "%";
+            }
+          });
+
+          return;
+        }
+      }
+
+      const largurasIniciais = {
+        livro: 22,
+        matricula: 9,
+        aluno: 15,
+        turma: 8,
+        emprestimo: 11,
+        devolucao: 11,
+        status: 10,
+        acoes: 7,
+      };
+
+      colunas.forEach(function (coluna) {
+        const nome = coluna.dataset.coluna;
+
+        coluna.style.width = largurasIniciais[nome] + "%";
+      });
+    }
+
+    aplicarLargurasIniciais();
+
+    let redimensionamento = null;
+
+    redimensionadores.forEach((redimensionador) => {
+      redimensionador.addEventListener("mousedown", function (event) {
+        event.preventDefault();
+
+        const coluna = this.dataset.redimensionar;
+        const indice = Array.from(colunas).findIndex(
+          (col) => col.dataset.coluna === coluna,
+        );
+
+        if (indice === -1) {
+          return;
+        }
+
+        const inicioX = event.clientX;
+
+        const largurasIniciaisPx = Array.from(colunas).map(
+          (col) => col.getBoundingClientRect().width,
+        );
+
+        const largurasAtuais = [...largurasIniciaisPx];
+
+        tabela.classList.add("redimensionando-coluna");
+
+        function moverColuna(evento) {
+          const deslocamento = evento.clientX - inicioX;
+
+          if (deslocamento === 0) {
+            return;
+          }
+
+          const sinal = deslocamento > 0 ? 1 : -1;
+          let restante = Math.abs(deslocamento);
+
+          /*
+           * Arrastando para a DIREITA:
+           *
+           * A coluna atual cresce.
+           * As colunas à direita cedem espaço,
+           * começando pela mais próxima.
+           */
+          if (sinal > 0) {
+            let espacoDisponivel = 0;
+
+            for (let i = indice + 1; i < largurasAtuais.length; i++) {
+              espacoDisponivel += Math.max(
+                0,
+                largurasAtuais[i] - largurasMinimas[colunas[i].dataset.coluna],
+              );
+            }
+
+            const aumento = Math.min(restante, espacoDisponivel);
+
+            largurasAtuais[indice] = largurasIniciaisPx[indice] + aumento;
+
+            let restanteParaRetirar = aumento;
+
+            for (
+              let i = indice + 1;
+              i < largurasAtuais.length && restanteParaRetirar > 0;
+              i++
+            ) {
+              const colunaNome = colunas[i].dataset.coluna;
+
+              const podeRetirar = Math.max(
+                0,
+                largurasIniciaisPx[i] - largurasMinimas[colunaNome],
+              );
+
+              const retirar = Math.min(restanteParaRetirar, podeRetirar);
+
+              largurasAtuais[i] = largurasIniciaisPx[i] - retirar;
+
+              restanteParaRetirar -= retirar;
+            }
+
+            for (let i = 0; i < indice; i++) {
+              largurasAtuais[i] = largurasIniciaisPx[i];
+            }
+          } else {
+
+          /*
+           * Arrastando para a ESQUERDA:
+           *
+           * A coluna atual cresce para a esquerda.
+           * As colunas à esquerda cedem espaço,
+           * começando pela mais próxima.
+           */
+            let espacoDisponivel = 0;
+
+            for (let i = indice - 1; i >= 0; i--) {
+              espacoDisponivel += Math.max(
+                0,
+                largurasIniciaisPx[i] -
+                  largurasMinimas[colunas[i].dataset.coluna],
+              );
+            }
+
+            const aumento = Math.min(restante, espacoDisponivel);
+
+            largurasAtuais[indice] = largurasIniciaisPx[indice] + aumento;
+
+            let restanteParaRetirar = aumento;
+
+            for (let i = indice - 1; i >= 0 && restanteParaRetirar > 0; i--) {
+              const colunaNome = colunas[i].dataset.coluna;
+
+              const podeRetirar = Math.max(
+                0,
+                largurasIniciaisPx[i] - largurasMinimas[colunaNome],
+              );
+
+              const retirar = Math.min(restanteParaRetirar, podeRetirar);
+
+              largurasAtuais[i] = largurasIniciaisPx[i] - retirar;
+
+              restanteParaRetirar -= retirar;
+            }
+
+            for (let i = indice + 1; i < largurasAtuais.length; i++) {
+              largurasAtuais[i] = largurasIniciaisPx[i];
+            }
+          }
+
+          /*
+           * Aplica as novas larguras em pixels.
+           */
+          colunas.forEach((col, i) => {
+            col.style.width = `${largurasAtuais[i]}px`;
+          });
+        }
+
+        function pararRedimensionamento() {
+          document.removeEventListener("mousemove", moverColuna);
+
+          document.removeEventListener("mouseup", pararRedimensionamento);
+
+          tabela.classList.remove("redimensionando-coluna");
+
+          salvarLarguras();
+        }
+
+        document.addEventListener("mousemove", moverColuna);
+
+        document.addEventListener("mouseup", pararRedimensionamento);
+      });
+    });
+
+    document.addEventListener("mousemove", function (evento) {
+      if (!redimensionamento) {
+        return;
+      }
+
+      const deslocamento = evento.clientX - redimensionamento.inicioX;
+
+      let novaLarguraAtual = redimensionamento.larguraAtual + deslocamento;
+
+      let novaLarguraSeguinte =
+        redimensionamento.larguraSeguinte - deslocamento;
+
+      const nomeAtual = redimensionamento.colunaAtual.dataset.coluna;
+
+      const nomeSeguinte = redimensionamento.colunaSeguinte.dataset.coluna;
+
+      const minimoAtual = largurasMinimas[nomeAtual] || 60;
+
+      const minimoSeguinte = largurasMinimas[nomeSeguinte] || 60;
+
+      if (novaLarguraAtual < minimoAtual) {
+        novaLarguraAtual = minimoAtual;
+
+        novaLarguraSeguinte =
+          redimensionamento.larguraAtual +
+          redimensionamento.larguraSeguinte -
+          novaLarguraAtual;
+      }
+
+      if (novaLarguraSeguinte < minimoSeguinte) {
+        novaLarguraSeguinte = minimoSeguinte;
+
+        novaLarguraAtual =
+          redimensionamento.larguraAtual +
+          redimensionamento.larguraSeguinte -
+          novaLarguraSeguinte;
+      }
+
+      redimensionamento.colunaAtual.style.width = novaLarguraAtual + "px";
+
+      redimensionamento.colunaSeguinte.style.width = novaLarguraSeguinte + "px";
+    });
+
+    document.addEventListener("mouseup", function () {
+      if (!redimensionamento) {
+        return;
+      }
+
+      salvarLarguras();
+
+      redimensionamento = null;
+
+      document.body.classList.remove("redimensionando-coluna");
+    });
+
+    window.addEventListener("resize", function () {
+      if (redimensionamento) {
+        return;
+      }
+
+      const larguraTabela = tabela.getBoundingClientRect().width;
+
+      if (larguraTabela <= 0) {
+        return;
+      }
+
+      const largurasAtuais = colunas.map(function (coluna) {
+        return {
+          coluna: coluna,
+          largura: coluna.getBoundingClientRect().width,
+        };
+      });
+
+      const soma = largurasAtuais.reduce(function (total, item) {
+        return total + item.largura;
+      }, 0);
+
+      if (soma <= 0) {
+        return;
+      }
+
+      largurasAtuais.forEach(function (item) {
+        item.coluna.style.width = (item.largura / soma) * 100 + "%";
+      });
+    });
+  });
+
+  function alternarNovoEmprestimo() {
+    const conteudo = document.getElementById("novo-emprestimo-conteudo");
+
+    const icone = document.getElementById("icone-novo-emprestimo");
+
+    const aberto = conteudo.classList.contains("aberto");
+
+    if (aberto) {
+      conteudo.classList.remove("aberto");
+      icone.classList.remove("aberto");
+    } else {
+      conteudo.classList.add("aberto");
+      icone.classList.add("aberto");
+    }
+  }
+
+  /* =====================================================
+   BUSCA DE ALUNO
+===================================================== */
+
+  const matriculaInput = document.getElementById("matricula");
+
+  const nomeInput = document.getElementById("nome");
+
+  const turmaInput = document.getElementById("turma");
+
+  const telefoneInput = document.getElementById("telefone");
+
+  matriculaInput.addEventListener("blur", async function () {
+    const matricula = matriculaInput.value.trim();
+
+    if (!matricula) {
+      return;
+    }
+
+    try {
+      const resposta = await fetch(
+        `/alunos/buscar?matricula=${encodeURIComponent(matricula)}`,
+      );
+
+      const aluno = await resposta.json();
+
+      if (aluno.encontrado) {
+        nomeInput.value = aluno.nome;
+
+        turmaInput.value = aluno.turma;
+
+        telefoneInput.value = aluno.telefone;
+
+        nomeInput.readOnly = true;
+
+        turmaInput.readOnly = true;
+
+        telefoneInput.readOnly = true;
+      } else {
+        nomeInput.value = "";
+
+        turmaInput.value = "";
+
+        telefoneInput.value = "";
+
+        nomeInput.readOnly = false;
+
+        turmaInput.readOnly = false;
+
+        telefoneInput.readOnly = false;
+
+        nomeInput.focus();
+      }
+    } catch (erro) {
+      console.error("Erro ao buscar aluno:", erro);
+    }
+  });
+
+  /* =====================================================
+   BUSCA DE LIVRO
+===================================================== */
+
+  const livroPesquisaInput = document.getElementById("livro_pesquisa");
+
+  const livroIdInput = document.getElementById("livro_id");
+
+  const resultadosLivros = document.getElementById("resultados_livros");
+
+  let timerBuscaLivro;
+
+  livroPesquisaInput.addEventListener("input", function () {
+    clearTimeout(timerBuscaLivro);
+
+    const pesquisa = livroPesquisaInput.value.trim();
+
+    livroIdInput.value = "";
+
+    resultadosLivros.innerHTML = "";
+
+    if (!pesquisa) {
+      return;
+    }
+
+    timerBuscaLivro = setTimeout(async function () {
+      try {
+        const resposta = await fetch(
+          `/livros/buscar?pesquisa=${encodeURIComponent(pesquisa)}`,
+        );
+
+        const dados = await resposta.json();
+
+        resultadosLivros.innerHTML = "";
+
+        if (dados.livros.length === 0) {
+          resultadosLivros.innerHTML = "<p>Nenhum livro encontrado.</p>";
+
+          return;
+        }
+
+        dados.livros.forEach(function (livro) {
+          const resultado = document.createElement("div");
+
+          resultado.style.cursor =
+            livro.disponiveis > 0 ? "pointer" : "default";
+
+          if (livro.disponiveis > 0) {
+            resultado.textContent =
+              `${livro.titulo} — ` +
+              `${livro.autor} — ` +
+              `ISBN: ${livro.isbn || "-"} — ` +
+              `${livro.disponiveis} disponível(eis)`;
+
+            resultado.addEventListener("click", function () {
+              livroPesquisaInput.value = livro.titulo;
+
+              livroIdInput.value = livro.id;
+
+              resultadosLivros.innerHTML = "";
+            });
+          } else {
+            resultado.textContent =
+              `${livro.titulo} — ` +
+              `${livro.autor} — ` +
+              `ISBN: ${livro.isbn || "-"} — ` +
+              `JÁ ESTÁ EMPRESTADO` +
+              (livro.data_devolucao
+                ? ` — Devolução prevista: ${livro.data_devolucao}`
+                : "");
+          }
+
+          resultadosLivros.appendChild(resultado);
+        });
+      } catch (erro) {
+        console.error("Erro ao buscar livros:", erro);
+      }
+    }, 300);
+  });
+
+  /* =====================================================
+   VALIDAÇÃO DO FORMULÁRIO
+===================================================== */
+
+  document
+    .getElementById("formulario-novo-emprestimo")
+    .addEventListener("submit", function (evento) {
+      if (!livroIdInput.value) {
+        evento.preventDefault();
+
+        mostrarAviso(
+          "Livro não selecionado",
+          "Selecione um livro da lista de resultados antes de registrar o empréstimo.",
+        );
+
+        livroPesquisaInput.focus();
+      }
+    });
+</script>
+
+{% endblock %}

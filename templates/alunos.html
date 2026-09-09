@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Alunos - Biblioteca
+{% endblock %}
+
+{% block content %}
+
+<div class="pagina-alunos">
+
+    <header class="pagina-cabecalho">
+        <div>
+            <div class="pagina-breadcrumb">
+                <span>Biblioteca</span>
+                <span>›</span>
+                <span>Alunos</span>
+            </div>
+
+            <h1 class="pagina-titulo">Alunos</h1>
+
+            <p class="pagina-subtitulo">
+                Consulte os alunos cadastrados e acompanhe os livros em posse.
+            </p>
+        </div>
+
+        <a href="/livros" class="botao botao-principal">
+            + Novo empréstimo
+        </a>
+    </header>
+
+
+    <section class="secao">
+        <div class="secao-cabecalho">
+            <div>
+                <h2 class="secao-titulo">Pesquisar alunos</h2>
+
+                <p class="secao-subtitulo">
+                    Pesquise por nome ou matrícula.
+                </p>
+            </div>
+
+            {% if alunos %}
+                <span class="lista-contador">
+                    {{ alunos|length }}
+                    {% if alunos|length == 1 %}
+                        aluno
+                    {% else %}
+                        alunos
+                    {% endif %}
+                </span>
+            {% endif %}
+        </div>
+
+
+        <form action="/alunos" method="GET" class="pesquisa-formulario">
+
+            <div class="pesquisa-campo">
+                <label for="pesquisa" class="campo-pesquisa-label">
+                    Aluno
+                </label>
+
+                <input
+                    type="text"
+                    id="pesquisa"
+                    name="pesquisa"
+                    placeholder="Nome ou matrícula..."
+                    value="{{ pesquisa }}"
+                >
+            </div>
+
+
+            <button
+                type="submit"
+                class="botao botao-principal"
+            >
+                Pesquisar
+            </button>
+
+
+            {% if pesquisa %}
+
+            <a
+                href="/alunos"
+                class="botao botao-secundario"
+            >
+                Limpar
+            </a>
+
+            {% endif %}
+
+        </form>
+    </section>
+
+
+    <section class="secao">
+
+        <div class="secao-cabecalho">
+
+            <div>
+                <h2 class="secao-titulo">
+                    Alunos cadastrados
+                </h2>
+
+                <p class="secao-subtitulo">
+                    Alunos registrados automaticamente durante os empréstimos.
+                </p>
+            </div>
+
+        </div>
+
+
+        {% if alunos %}
+
+        <div class="tabela-container">
+
+            <table class="tabela tabela-alunos">
+
+                <thead>
+                    <tr>
+                        <th>Matrícula</th>
+                        <th>Nome</th>
+                        <th>Turma</th>
+                        <th>Telefone</th>
+                        <th>Livros em posse</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+
+
+                <tbody>
+
+                    {% for item in alunos %}
+
+                    <tr>
+
+                        <td>
+                            <span class="tabela-id">
+                                {{ item.aluno.matricula }}
+                            </span>
+                        </td>
+
+
+                        <td>
+                            <div class="tabela-texto-principal">
+                                {{ item.aluno.nome }}
+                            </div>
+                        </td>
+
+
+                        <td>
+                            {{ item.aluno.turma }}
+                        </td>
+
+
+                        <td>
+
+                            {% if item.aluno.telefone %}
+
+                                {{ item.aluno.telefone }}
+
+                            {% else %}
+
+                                <span class="texto-suave">
+                                    —
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            {% if item.livros_em_posse > 0 %}
+
+                                <span class="disponibilidade disponibilidade-disponivel">
+                                    {{ item.livros_em_posse }}
+                                </span>
+
+                            {% else %}
+
+                                <span class="disponibilidade disponibilidade-neutro">
+                                    0
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            <div class="tabela-acoes">
+
+                                <a
+                                    href="/alunos/detalhes/{{ item.aluno.id }}"
+                                    class="botao botao-pequeno botao-secundario"
+                                >
+                                    Detalhes
+                                </a>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        {% else %}
+
+        <div class="estado-vazio">
+
+            <div class="estado-vazio-icone">
+                👤
+            </div>
+
+            <h3 class="estado-vazio-titulo">
+                Nenhum aluno cadastrado
+            </h3>
+
+            <p class="estado-vazio-descricao">
+                Os alunos aparecem aqui automaticamente após realizarem
+                seu primeiro empréstimo.
+            </p>
+
+            <br>
+
+            <a
+                href="/livros"
+                class="botao botao-principal"
+            >
+                Registrar primeiro empréstimo
+            </a>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,309 @@
+{% extends "base.html" %}
+
+{% block title %}
+Detalhes do Empréstimo - Biblioteca
+{% endblock %}
+
+{% block content %}
+
+<div class="detalhes-emprestimo">
+
+  <div class="pagina-cabecalho">
+    <div>
+      <h1>Detalhes do empréstimo</h1>
+
+      <p class="pagina-subtitulo">
+        Consulte as informações do aluno, do livro e da situação do empréstimo.
+      </p>
+    </div>
+  </div>
+
+
+  <!-- =====================================================
+       ALUNO
+       ===================================================== -->
+
+  <section class="secao">
+
+    <div>
+      <h2 class="secao-titulo">Aluno</h2>
+
+      <p class="secao-subtitulo">
+        Informações do aluno que realizou o empréstimo.
+      </p>
+    </div>
+
+    <div class="tabela-container">
+
+      <table class="tabela">
+
+        <tbody>
+
+          <tr>
+            <th>Matrícula</th>
+            <td>
+              {{ emprestimo.aluno.matricula }}
+            </td>
+          </tr>
+
+          <tr>
+            <th>Nome</th>
+            <td>
+              {{ emprestimo.aluno.nome }}
+            </td>
+          </tr>
+
+          <tr>
+            <th>Turma</th>
+            <td>
+              {{ emprestimo.aluno.turma }}
+            </td>
+          </tr>
+
+          <tr>
+            <th>Telefone</th>
+            <td>
+              {{ emprestimo.aluno.telefone or "-" }}
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       LIVRO
+       ===================================================== -->
+
+  <section class="secao">
+
+    <div>
+      <h2 class="secao-titulo">Livro</h2>
+
+      <p class="secao-subtitulo">
+        Informações do livro que foi emprestado.
+      </p>
+    </div>
+
+    <div class="tabela-container">
+
+      <table class="tabela">
+
+        <tbody>
+
+          <tr>
+            <th>Título</th>
+            <td>
+              {{ emprestimo.livro.titulo }}
+            </td>
+          </tr>
+
+          <tr>
+            <th>Autor</th>
+            <td>
+              {{ emprestimo.livro.autor }}
+            </td>
+          </tr>
+
+          <tr>
+            <th>ISBN</th>
+            <td>
+              {{ emprestimo.livro.isbn or "-" }}
+            </td>
+          </tr>
+
+          <tr>
+            <th>Editora</th>
+            <td>
+              {{ emprestimo.livro.editora or "-" }}
+            </td>
+          </tr>
+
+          <tr>
+            <th>Ano de publicação</th>
+            <td>
+              {{ emprestimo.livro.ano or "-" }}
+            </td>
+          </tr>
+
+          <tr>
+            <th>Categoria</th>
+            <td>
+              {{ emprestimo.livro.categoria or "-" }}
+            </td>
+          </tr>
+
+          <tr>
+            <th>Localização</th>
+            <td>
+              {{ emprestimo.livro.localizacao or "-" }}
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       DATAS E SITUAÇÃO
+       ===================================================== -->
+
+  <section class="secao">
+
+    <div>
+      <h2 class="secao-titulo">Datas e situação</h2>
+
+      <p class="secao-subtitulo">
+        Acompanhe o período e a situação atual do empréstimo.
+      </p>
+    </div>
+
+    <div class="tabela-container">
+
+      <table class="tabela">
+
+        <tbody>
+
+          <tr>
+            <th>Data do empréstimo</th>
+            <td>
+              {{ emprestimo.data_emprestimo.strftime('%d/%m/%Y') }}
+            </td>
+          </tr>
+
+          <tr>
+            <th>Devolução prevista</th>
+            <td>
+
+              {% if emprestimo.status == "atrasado" %}
+
+                <span class="data-devolucao data-devolucao-vermelha">
+                  {{ emprestimo.data_devolucao_prevista.strftime('%d/%m/%Y') }}
+                </span>
+
+              {% elif emprestimo.status == "emprestado" %}
+
+                <span class="data-devolucao data-devolucao-amarela">
+                  {{ emprestimo.data_devolucao_prevista.strftime('%d/%m/%Y') }}
+                </span>
+
+              {% else %}
+
+                {{ emprestimo.data_devolucao_prevista.strftime('%d/%m/%Y') }}
+
+              {% endif %}
+
+            </td>
+          </tr>
+
+          <tr>
+            <th>Data da devolução</th>
+            <td>
+
+              {% if emprestimo.data_devolucao %}
+
+                <span class="data-devolucao data-devolucao-verde">
+                  {{ emprestimo.data_devolucao.strftime('%d/%m/%Y') }}
+                </span>
+
+              {% else %}
+
+                Ainda não devolvido
+
+              {% endif %}
+
+            </td>
+          </tr>
+
+          <tr>
+            <th>Situação</th>
+            <td>
+
+              {% if emprestimo.status == "emprestado" %}
+
+                <span class="data-devolucao data-devolucao-amarela">
+                  Emprestado
+                </span>
+
+              {% elif emprestimo.status == "devolvido" %}
+
+                <span class="data-devolucao data-devolucao-verde">
+                  Devolvido
+                </span>
+
+              {% elif emprestimo.status == "atrasado" %}
+
+                <span class="data-devolucao data-devolucao-vermelha">
+                  Atrasado
+                </span>
+
+              {% else %}
+
+                {{ emprestimo.status }}
+
+              {% endif %}
+
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       INFORMAÇÃO DE GERAÇÃO
+       ===================================================== -->
+
+  <p class="detalhes-emprestimo-gerado">
+    <strong>Detalhes gerados em:</strong>
+    {{ data_geracao.strftime('%d/%m/%Y às %H:%M:%S') }}
+  </p>
+
+
+  <!-- =====================================================
+       AÇÕES
+       ===================================================== -->
+
+  <div class="acoes-detalhes">
+
+    <button
+      type="button"
+      class="botao botao-principal"
+      onclick="abrirComprovante()"
+    >
+      Salvar como PDF
+    </button>
+
+    <a href="/emprestimos" class="botao">
+      Voltar
+    </a>
+
+  </div>
+
+</div>
+
+
+<script>
+  function abrirComprovante() {
+    const url = "/emprestimos/pdf/{{ emprestimo.id }}";
+
+    window.open(url, "_blank");
+  }
+</script>
+
+{% endblock %}
