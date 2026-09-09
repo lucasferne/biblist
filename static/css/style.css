@@ -1256,18 +1256,16 @@ body.sidebar-recolhida .sidebar-sair {
     border: 1px solid var(--cor-borda);
     border-radius: var(--raio-medio);
 
-    box-shadow: var(--sombra-card);
-
-    transition:
-        transform 0.15s ease,
-        box-shadow 0.15s ease;
+    box-shadow: none;
 }
+
 
 .dashboard-indicador:hover {
-    transform: translateY(-2px);
+    transform: none;
 
-    box-shadow: var(--sombra-elevada);
+    box-shadow: none;
 }
+
 
 .dashboard-indicador-conteudo {
     min-width: 0;

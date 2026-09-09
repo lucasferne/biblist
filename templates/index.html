@@ -19,18 +19,6 @@
       <p class="pagina-subtitulo">Bem-vindo, {{ current_user.nome }}!</p>
     </div>
 
-    <div class="dashboard-perfil">
-      <div class="dashboard-avatar">{{ current_user.nome[0]|upper }}</div>
-
-      <div class="dashboard-perfil-info">
-        <div class="dashboard-perfil-nome">{{ current_user.nome }}</div>
-
-        <div class="dashboard-perfil-tipo">
-          {% if current_user.admin %} Administrador {% else %} Usuário {% endif
-          %}
-        </div>
-      </div>
-    </div>
   </header>
 
   <!-- =====================================================
