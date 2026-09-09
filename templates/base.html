@@ -195,23 +195,6 @@
 
                     </a>
 
-
-                    <a
-                        href="{{ url_for('novo_emprestimo') }}"
-                        class="sidebar-link {% if request.endpoint == 'novo_emprestimo' %}ativo{% endif %}"
-                        title="Novo empréstimo"
-                    >
-
-                        <span class="sidebar-icone">
-                            ➕
-                        </span>
-
-                        <span class="sidebar-texto">
-                            Novo empréstimo
-                        </span>
-
-                    </a>
-
                 </div>
 
 
@@ -257,7 +240,7 @@
 
             <div class="sidebar-rodape">
 
-                <div class="sidebar-usuario">
+                <a href="{{ url_for('alterar_senha') }}" class="sidebar-usuario" title="Alterar senha" >
 
                     <div class="sidebar-avatar">
                         {{ current_user.nome[0]|upper }}
@@ -283,7 +266,7 @@
 
                     </div>
 
-                </div>
+                </a>
 
 
                 <!-- =================================================

@@ -10,7 +10,8 @@ from flask import (
     request,
     redirect,
     abort,
-    flash
+    flash,
+    url_for
 )
 
 from flask_login import (
@@ -1220,29 +1221,6 @@ def excluir_usuario(id):
 
 
 # ============================================================
-# NOVO EMPRÉSTIMO
-# ============================================================
-
-@app.route(
-    "/emprestimos/novo"
-)
-@login_required
-def novo_emprestimo():
-
-    livros = Livro.query.filter(
-        Livro.disponiveis > 0
-    ).order_by(
-        Livro.titulo
-    ).all()
-
-
-    return render_template(
-        "novo_emprestimo.html",
-        livros=livros
-    )
-
-
-# ============================================================
 # BUSCAR ALUNO PELA MATRÍCULA
 # ============================================================
 
@@ -2030,32 +2008,67 @@ def detalhes_aluno(id):
         emprestimos=emprestimos
     )
 
+@app.route("/minha-conta/senha", methods=["GET", "POST"])
+@login_required
+def alterar_senha():
 
-# ============================================================
-# LOGIN DE DESENVOLVIMENTO
-# REMOVER ANTES DO .EXE FINAL
-# ============================================================
+    if request.method == "POST":
 
-@app.route("/dev-login")
-def dev_login():
+        senha_atual = request.form.get("senha_atual", "")
+        nova_senha = request.form.get("nova_senha", "")
+        confirmar_senha = request.form.get("confirmar_senha", "")
 
-    usuario = Usuario.query.filter_by(
-        email="admin@biblioteca.local"
-    ).first()
+        if not check_password_hash(
+            current_user.senha,
+            senha_atual
+        ):
+            flash(
+                "A senha atual está incorreta.",
+                "error"
+            )
 
+            return redirect(
+                url_for("alterar_senha")
+            )
 
-    if not usuario:
+        if nova_senha != confirmar_senha:
+            flash(
+                "A nova senha não corresponde à confirmação.",
+                "error"
+            )
 
-        abort(
-            404,
-            "Administrador padrão não encontrado."
+            return redirect(
+                url_for("alterar_senha")
+            )
+
+        if nova_senha == senha_atual:
+            flash(
+                "A nova senha deve ser diferente da senha atual.",
+                "error"
+            )
+
+            return redirect(
+                url_for("alterar_senha")
+            )
+
+        current_user.senha = generate_password_hash(
+            nova_senha
         )
 
+        db.session.commit()
 
-    login_user(usuario)
+        flash(
+            "Senha alterada com sucesso.",
+            "success"
+        )
 
+        return redirect(
+            url_for("alterar_senha")
+        )
 
-    return redirect("/")
+    return render_template(
+        "alterar_senha.html"
+    )
 
 
 # ============================================================

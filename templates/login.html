@@ -59,9 +59,12 @@
                 <div class="login-formulario">
 
 
-                    {% with mensagens = get_flashed_messages(with_categories=true) %}
+                
+                {% with mensagens = get_flashed_messages(with_categories=true) %}
 
-                        {% for categoria, mensagem in mensagens %}
+                    {% for categoria, mensagem in mensagens %}
+
+                        {% if mensagem != "Faça login para acessar esta página." %}
 
                             <div
                                 class="
@@ -78,9 +81,20 @@
 
                             </div>
 
-                        {% endfor %}
+                        {% endif %}
 
-                    {% endwith %}
+                    {% endfor %}
+
+                {% endwith %}
+
+
+                {% if erro %}
+                    <div class="login-alerta login-alerta-erro">
+                        {{ erro }}
+                    </div>
+                {% endif %}
+
+
 
 
                     <form
