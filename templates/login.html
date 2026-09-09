@@ -17,6 +17,10 @@
         href="{{ url_for('static', filename='css/style.css') }}"
     >
 
+    <script
+        src="{{ url_for('static', filename='js/lucide.js') }}"
+    ></script>
+
 </head>
 
 
@@ -36,7 +40,20 @@
                 <header class="login-cabecalho">
 
                     <div class="login-logo">
-                        📚
+
+                        {% if configuracao and configuracao.logo %}
+
+                            <img
+                                src="{{ url_for('static', filename='uploads/' + configuracao.logo) }}"
+                                alt="Logo da biblioteca"
+                            >
+
+                        {% else %}
+
+                            <i data-lucide="library-big"></i>
+
+                        {% endif %}
+
                     </div>
 
 
@@ -59,7 +76,6 @@
                 <div class="login-formulario">
 
 
-                
                 {% with mensagens = get_flashed_messages(with_categories=true) %}
 
                     {% for categoria, mensagem in mensagens %}
@@ -89,12 +105,12 @@
 
 
                 {% if erro %}
+
                     <div class="login-alerta login-alerta-erro">
                         {{ erro }}
                     </div>
+
                 {% endif %}
-
-
 
 
                     <form
@@ -185,7 +201,24 @@
 
     </main>
 
+
+    <script>
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                if (typeof lucide !== "undefined") {
+
+                    lucide.createIcons();
+
+                }
+
+            }
+        );
+
+    </script>
+
 </body>
 
 </html>
-

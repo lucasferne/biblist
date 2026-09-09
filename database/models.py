@@ -110,23 +110,24 @@ class Emprestimo(db.Model):
 class Configuracao(db.Model):
     __tablename__ = "configuracao"
 
-    id = db.Column(db.Integer, primary_key=True)
-
-    nome_biblioteca = db.Column(
-        db.String(200),
-        nullable=False,
-        default="Sistema de Biblioteca"
+    id = db.Column(
+        db.Integer,
+        primary_key=True
     )
 
-    cor_primaria = db.Column(
+    nome_biblioteca = db.Column(
+        db.String(150),
+        nullable=False,
+        default="Biblioteca"
+    )
+
+    cor_principal = db.Column(
         db.String(20),
         nullable=False,
-        default="#2563EB"
+        default="#2f3e46"
     )
 
     logo = db.Column(
         db.String(255),
         nullable=True
     )
-
-    

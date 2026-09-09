@@ -1,5 +1,9 @@
 import threading
 import webview
+import os
+import uuid
+
+from werkzeug.utils import secure_filename
 
 from functools import wraps
 from datetime import date, datetime
@@ -32,7 +36,8 @@ from database.models import (
     Livro,
     Usuario,
     Aluno,
-    Emprestimo
+    Emprestimo,
+    Configuracao
 )
 
 
@@ -99,6 +104,25 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///biblioteca.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
+
+@app.context_processor
+def injetar_configuracao():
+
+    configuracao = Configuracao.query.first()
+
+    if not configuracao:
+        configuracao = Configuracao(
+            nome_biblioteca="Biblioteca",
+            cor_principal="#2f3e46"
+        )
+
+        db.session.add(configuracao)
+        db.session.commit()
+
+    return {
+        "configuracao": configuracao
+    }
+
 
 # ============================================================
 # ATUALIZAÇÃO AUTOMÁTICA
@@ -1787,6 +1811,7 @@ def comprovante_emprestimo(id):
     )
 
 
+
 # ============================================================
 # BUSCAR LIVROS PARA NOVO EMPRÉSTIMO
 # ============================================================
@@ -2070,6 +2095,163 @@ def alterar_senha():
         "alterar_senha.html"
     )
 
+@app.route("/configuracoes", methods=["GET", "POST"])
+@login_required
+@admin_required
+def configuracoes():
+
+    configuracao = Configuracao.query.first()
+
+    if not configuracao:
+        configuracao = Configuracao()
+        db.session.add(configuracao)
+        db.session.commit()
+
+    if request.method == "POST":
+
+        configuracao.nome_biblioteca = request.form.get(
+            "nome_biblioteca",
+            "Biblioteca"
+        ).strip()
+
+        configuracao.cor_principal = request.form.get(
+            "cor_principal",
+            "#2f3e46"
+        ).strip()
+
+        arquivo_logo = request.files.get("logo")
+
+        if arquivo_logo and arquivo_logo.filename:
+
+            extensoes_permitidas = {
+                "png",
+                "jpg",
+                "jpeg",
+                "webp"
+            }
+
+            nome_original = secure_filename(
+                arquivo_logo.filename
+            )
+
+            extensao = os.path.splitext(
+                nome_original
+            )[1].lower().lstrip(".")
+
+            if extensao not in extensoes_permitidas:
+
+                flash(
+                    "Formato de logo não permitido. "
+                    "Use PNG, JPG, JPEG ou WEBP.",
+                    "error"
+                )
+
+                return redirect(
+                    url_for("configuracoes")
+                )
+
+            pasta_uploads = os.path.join(
+                app.root_path,
+                "static",
+                "uploads"
+            )
+
+            os.makedirs(
+                pasta_uploads,
+                exist_ok=True
+            )
+
+            novo_nome = (
+                f"{uuid.uuid4().hex}"
+                f".{extensao}"
+            )
+
+            caminho_novo_logo = os.path.join(
+                pasta_uploads,
+                novo_nome
+            )
+
+            arquivo_logo.save(
+                caminho_novo_logo
+            )
+
+            if configuracao.logo:
+
+                caminho_logo_antigo = os.path.join(
+                    pasta_uploads,
+                    configuracao.logo
+                )
+
+                if os.path.exists(
+                    caminho_logo_antigo
+                ):
+
+                    os.remove(
+                        caminho_logo_antigo
+                    )
+
+            configuracao.logo = novo_nome
+
+        db.session.commit()
+
+        flash(
+            "Configurações salvas com sucesso.",
+            "success"
+        )
+
+        return redirect(
+            url_for("configuracoes")
+        )
+
+    return render_template(
+        "configuracoes.html",
+        configuracao=configuracao
+    )
+
+@app.route(
+    "/configuracoes/logo/remover",
+    methods=["POST"]
+)
+@login_required
+@admin_required
+def remover_logo():
+
+    configuracao = Configuracao.query.first()
+
+    if configuracao and configuracao.logo:
+
+        nome_logo = configuracao.logo
+
+        configuracao.logo = None
+
+        db.session.commit()
+
+        pasta_uploads = os.path.join(
+            app.root_path,
+            "static",
+            "uploads"
+        )
+
+        caminho_logo = os.path.join(
+            pasta_uploads,
+            nome_logo
+        )
+
+        if os.path.exists(caminho_logo):
+
+            os.remove(caminho_logo)
+
+        flash(
+            "Logo removido com sucesso.",
+            "success"
+        )
+
+    return redirect(
+        url_for("configuracoes")
+    )
+
+
+
 
 # ============================================================
 # INICIALIZAÇÃO DO FLASK
@@ -2148,7 +2330,7 @@ if __name__ == "__main__":
 
     webview.create_window(
 
-        "Sistema de Biblioteca",
+        "biblist",
 
         "http://127.0.0.1:5000",
 

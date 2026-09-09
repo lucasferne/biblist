@@ -13,6 +13,10 @@
 
   <title>Comprovante de Empréstimo</title>
 
+  <script
+    src="{{ url_for('static', filename='js/lucide.js') }}"
+  ></script>
+
   <style>
 
     @page {
@@ -50,6 +54,30 @@
       padding-bottom: 18px;
       border-bottom: 2px solid #2f3e46;
       text-align: center;
+    }
+
+
+    .cabecalho-logo {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+
+    .cabecalho-logo img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+
+    .cabecalho-logo svg {
+      width: 48px;
+      height: 48px;
+      stroke-width: 1.8;
     }
 
 
@@ -285,12 +313,31 @@
 
     <header class="cabecalho">
 
+      <div class="cabecalho-logo">
+
+        {% if configuracao.logo %}
+
+          <img
+            src="{{ url_for('static', filename='uploads/' + configuracao.logo) }}"
+            alt="Logo da biblioteca"
+          >
+
+        {% else %}
+
+          <i data-lucide="library-big"></i>
+
+        {% endif %}
+
+      </div>
+
+
       <h1>
         COMPROVANTE DE EMPRÉSTIMO
       </h1>
 
+
       <p>
-        Sistema de Biblioteca
+        {{ configuracao.nome_biblioteca }}
       </p>
 
     </header>
@@ -610,6 +657,22 @@
 
 
   </div>
+
+
+  <script>
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      function () {
+
+        if (typeof lucide !== "undefined") {
+          lucide.createIcons();
+        }
+
+      }
+    );
+
+  </script>
 
 
 </body>

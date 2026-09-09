@@ -38,7 +38,9 @@
       <!-- Livros -->
 
       <a href="{{ url_for('livros') }}" class="dashboard-acesso">
-        <div class="dashboard-acesso-icone">📚</div>
+        <div class="dashboard-acesso-icone">
+          <i data-lucide="book-open"></i>
+        </div>
 
         <div class="dashboard-acesso-conteudo">
           <div class="dashboard-acesso-titulo">Livros</div>
@@ -52,7 +54,9 @@
       <!-- Empréstimos -->
 
       <a href="{{ url_for('emprestimos') }}" class="dashboard-acesso">
-        <div class="dashboard-acesso-icone">🔄</div>
+        <div class="dashboard-acesso-icone">
+          <i data-lucide="arrow-left-right"></i>
+        </div>
 
         <div class="dashboard-acesso-conteudo">
           <div class="dashboard-acesso-titulo">Empréstimos</div>
@@ -66,7 +70,9 @@
       <!-- Alunos -->
 
       <a href="{{ url_for('alunos') }}" class="dashboard-acesso">
-        <div class="dashboard-acesso-icone">🎓</div>
+        <div class="dashboard-acesso-icone">
+          <i data-lucide="graduation-cap"></i>
+        </div>
 
         <div class="dashboard-acesso-conteudo">
           <div class="dashboard-acesso-titulo">Alunos</div>
@@ -82,7 +88,9 @@
       {% if current_user.admin %}
 
       <a href="{{ url_for('usuarios') }}" class="dashboard-acesso">
-        <div class="dashboard-acesso-icone">👥</div>
+        <div class="dashboard-acesso-icone">
+          <i data-lucide="users"></i>
+        </div>
 
         <div class="dashboard-acesso-conteudo">
           <div class="dashboard-acesso-titulo">Usuários</div>
@@ -122,7 +130,9 @@
           <p class="dashboard-indicador-valor">{{ total_livros }}</p>
         </div>
 
-        <div class="dashboard-indicador-icone">📚</div>
+        <div class="dashboard-indicador-icone">
+          <i data-lucide="book-open"></i>
+        </div>
       </div>
 
       <!-- Exemplares -->
@@ -134,7 +144,9 @@
           <p class="dashboard-indicador-valor">{{ total_exemplares }}</p>
         </div>
 
-        <div class="dashboard-indicador-icone">📦</div>
+        <div class="dashboard-indicador-icone">
+          <i data-lucide="package"></i>
+        </div>
       </div>
 
       <!-- Disponíveis -->
@@ -146,7 +158,9 @@
           <p class="dashboard-indicador-valor">{{ exemplares_disponiveis }}</p>
         </div>
 
-        <div class="dashboard-indicador-icone">✅</div>
+        <div class="dashboard-indicador-icone">
+          <i data-lucide="circle-check"></i>
+        </div>
       </div>
 
       <!-- Alunos -->
@@ -158,7 +172,9 @@
           <p class="dashboard-indicador-valor">{{ total_alunos }}</p>
         </div>
 
-        <div class="dashboard-indicador-icone">🎓</div>
+        <div class="dashboard-indicador-icone">
+          <i data-lucide="graduation-cap"></i>
+        </div>
       </div>
 
       <!-- Empréstimos ativos -->
@@ -170,7 +186,9 @@
           <p class="dashboard-indicador-valor">{{ emprestimos_ativos }}</p>
         </div>
 
-        <div class="dashboard-indicador-icone">🔄</div>
+        <div class="dashboard-indicador-icone">
+          <i data-lucide="arrow-left-right"></i>
+        </div>
       </div>
 
       <!-- Empréstimos atrasados -->
@@ -182,7 +200,9 @@
           <p class="dashboard-indicador-valor">{{ emprestimos_atrasados }}</p>
         </div>
 
-        <div class="dashboard-indicador-icone">⚠️</div>
+        <div class="dashboard-indicador-icone">
+          <i data-lucide="triangle-alert"></i>
+        </div>
       </div>
     </div>
   </section>
@@ -265,7 +285,9 @@
     {% else %}
 
     <div class="dashboard-vazio">
-      <div class="dashboard-vazio-icone">📖</div>
+      <div class="dashboard-vazio-icone">
+        <i data-lucide="book-open"></i>
+      </div>
 
       <h3 class="dashboard-vazio-titulo">Nenhum empréstimo registrado</h3>
 
