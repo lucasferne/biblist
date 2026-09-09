@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {% block title %}
+            Biblioteca
+        {% endblock %}
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+    <div id="app">
+
+        <!-- =====================================================
+             OVERLAY MOBILE
+        ====================================================== -->
+
+        <div
+            id="sidebar-overlay"
+            onclick="fecharSidebarMobile()"
+        ></div>
+
+
+        <!-- =====================================================
+             SIDEBAR
+        ====================================================== -->
+
+        <aside id="sidebar">
+
+
+            <!-- =================================================
+                 CABEÇALHO DA SIDEBAR
+            ================================================== -->
+
+            <div class="sidebar-cabecalho">
+
+                <div class="sidebar-logo">
+
+                    <span class="sidebar-logo-icone">
+                        📚
+                    </span>
+
+                    <div class="sidebar-texto">
+
+                        <div class="sidebar-logo-titulo">
+                            Biblioteca
+                        </div>
+
+                        <div class="sidebar-logo-subtitulo">
+                            Sistema de gerenciamento
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    onclick="alternarSidebar()"
+                    class="sidebar-botao"
+                    title="Recolher menu"
+                    aria-label="Recolher menu"
+                >
+                    ◀
+                </button>
+
+            </div>
+
+
+            <!-- =================================================
+                 NAVEGAÇÃO
+            ================================================== -->
+
+            <nav id="sidebar-navegacao">
+
+
+                <!-- =============================================
+                     PRINCIPAL
+                ============================================== -->
+
+                <div class="sidebar-secao">
+
+                    <div class="sidebar-menu-titulo">
+                        Principal
+                    </div>
+
+                    <a
+                        href="{{ url_for('index') }}"
+                        class="sidebar-link {% if request.endpoint == 'index' %}ativo{% endif %}"
+                        title="Dashboard"
+                    >
+
+                        <span class="sidebar-icone">
+                            🏠
+                        </span>
+
+                        <span class="sidebar-texto">
+                            Dashboard
+                        </span>
+
+                    </a>
+
+                </div>
+
+
+                <!-- =============================================
+                     ACERVO
+                ============================================== -->
+
+                <div class="sidebar-secao">
+
+                    <div class="sidebar-menu-titulo">
+                        Acervo
+                    </div>
+
+
+                    <a
+                        href="{{ url_for('livros') }}"
+                        class="sidebar-link {% if request.endpoint in ['livros', 'cadastrar_livro', 'editar_livro', 'detalhes_livro'] %}ativo{% endif %}"
+                        title="Livros"
+                    >
+
+                        <span class="sidebar-icone">
+                            📚
+                        </span>
+
+                        <span class="sidebar-texto">
+                            Livros
+                        </span>
+
+                    </a>
+
+
+                    <a
+                        href="{{ url_for('alunos') }}"
+                        class="sidebar-link {% if request.endpoint in ['alunos', 'detalhes_aluno'] %}ativo{% endif %}"
+                        title="Alunos"
+                    >
+
+                        <span class="sidebar-icone">
+                            🎓
+                        </span>
+
+                        <span class="sidebar-texto">
+                            Alunos
+                        </span>
+
+                    </a>
+
+                </div>
+
+
+                <!-- =============================================
+                     CIRCULAÇÃO
+                ============================================== -->
+
+                <div class="sidebar-secao">
+
+                    <div class="sidebar-menu-titulo">
+                        Circulação
+                    </div>
+
+
+                    <a
+                        href="{{ url_for('emprestimos') }}"
+                        class="sidebar-link {% if request.endpoint in ['emprestimos', 'detalhes_emprestimo', 'comprovante_emprestimo'] %}ativo{% endif %}"
+                        title="Empréstimos"
+                    >
+
+                        <span class="sidebar-icone">
+                            🔄
+                        </span>
+
+                        <span class="sidebar-texto">
+                            Empréstimos
+                        </span>
+
+                    </a>
+
+
+                    <a
+                        href="{{ url_for('novo_emprestimo') }}"
+                        class="sidebar-link {% if request.endpoint == 'novo_emprestimo' %}ativo{% endif %}"
+                        title="Novo empréstimo"
+                    >
+
+                        <span class="sidebar-icone">
+                            ➕
+                        </span>
+
+                        <span class="sidebar-texto">
+                            Novo empréstimo
+                        </span>
+
+                    </a>
+
+                </div>
+
+
+                <!-- =============================================
+                     ADMINISTRAÇÃO
+                ============================================== -->
+
+                {% if current_user.admin %}
+
+                <div class="sidebar-secao">
+
+                    <div class="sidebar-menu-titulo">
+                        Administração
+                    </div>
+
+
+                    <a
+                        href="{{ url_for('usuarios') }}"
+                        class="sidebar-link {% if request.endpoint in ['usuarios', 'cadastrar_usuario', 'editar_usuario'] %}ativo{% endif %}"
+                        title="Usuários"
+                    >
+
+                        <span class="sidebar-icone">
+                            👥
+                        </span>
+
+                        <span class="sidebar-texto">
+                            Usuários
+                        </span>
+
+                    </a>
+
+                </div>
+
+                {% endif %}
+
+            </nav>
+
+
+            <!-- =================================================
+                 USUÁRIO LOGADO
+            ================================================== -->
+
+            <div class="sidebar-rodape">
+
+                <div class="sidebar-usuario">
+
+                    <div class="sidebar-avatar">
+                        {{ current_user.nome[0]|upper }}
+                    </div>
+
+
+                    <div class="sidebar-usuario-info sidebar-texto">
+
+                        <div class="sidebar-usuario-nome">
+                            {{ current_user.nome }}
+                        </div>
+
+
+                        <div class="sidebar-usuario-tipo">
+
+                            {% if current_user.admin %}
+                                Administrador
+                            {% else %}
+                                Usuário
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     SAIR
+                ================================================== -->
+
+                <a
+                    href="{{ url_for('logout') }}"
+                    class="sidebar-sair"
+                    title="Sair"
+                >
+
+                    <span class="sidebar-icone">
+                        🚪
+                    </span>
+
+                    <span class="sidebar-texto">
+                        Sair
+                    </span>
+
+                </a>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =====================================================
+             CONTEÚDO PRINCIPAL
+        ====================================================== -->
+
+        <div id="conteudo-principal">
+
+
+            <!-- =================================================
+                 CABEÇALHO MOBILE
+            ================================================== -->
+
+            <header id="header-mobile">
+
+                <button
+                    type="button"
+                    onclick="abrirSidebarMobile()"
+                    id="botao-menu-mobile"
+                    aria-label="Abrir menu"
+                >
+                    ☰
+                </button>
+
+
+                <span id="titulo-mobile">
+                    📚 Biblioteca
+                </span>
+
+            </header>
+
+
+            <!-- =================================================
+                 CONTEÚDO DA PÁGINA
+            ================================================== -->
+
+            <div id="conteudo-scroll">
+
+                <main id="conteudo-pagina">
+
+                    {% block content %}
+                    {% endblock %}
+
+                </main>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         MODAL GLOBAL
+    ========================================================== -->
+
+    <div
+        id="modal-overlay"
+        class="modal-overlay"
+        hidden
+    >
+
+        <div
+            id="modal"
+            class="modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-titulo"
+        >
+
+            <div class="modal-header">
+
+                <div
+                    id="modal-icone"
+                    class="modal-icone"
+                ></div>
+
+                <h2 id="modal-titulo">
+                    Aviso
+                </h2>
+
+            </div>
+
+
+            <div class="modal-body">
+
+                <p id="modal-mensagem"></p>
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button
+                    id="modal-cancelar"
+                    type="button"
+                    class="modal-botao modal-botao-secundario"
+                >
+                    Cancelar
+                </button>
+
+
+                <button
+                    id="modal-confirmar"
+                    type="button"
+                    class="modal-botao modal-botao-principal"
+                >
+                    Confirmar
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         FLASH MESSAGES
+    ========================================================== -->
+
+    <div id="mensagens-flash" hidden>
+
+        {% with mensagens = get_flashed_messages(with_categories=true) %}
+
+            {% for categoria, mensagem in mensagens %}
+
+                <div
+                    data-categoria="{{ categoria }}"
+                    data-mensagem="{{ mensagem }}"
+                ></div>
+
+            {% endfor %}
+
+        {% endwith %}
+
+    </div>
+
+
+    <!-- =========================================================
+         JAVASCRIPT GLOBAL
+    ========================================================== -->
+
+    <script>
+
+        /* ======================================================
+           SIDEBAR DESKTOP
+        ====================================================== */
+
+        function alternarSidebar() {
+
+            document.body.classList.toggle(
+                "sidebar-recolhida"
+            );
+
+
+            const botao =
+                document.querySelector(
+                    ".sidebar-botao"
+                );
+
+
+            if (
+                document.body.classList.contains(
+                    "sidebar-recolhida"
+                )
+            ) {
+
+                botao.textContent = "▶";
+                botao.title = "Expandir menu";
+                botao.setAttribute(
+                    "aria-label",
+                    "Expandir menu"
+                );
+
+            } else {
+
+                botao.textContent = "◀";
+                botao.title = "Recolher menu";
+                botao.setAttribute(
+                    "aria-label",
+                    "Recolher menu"
+                );
+
+            }
+
+        }
+
+
+        /* ======================================================
+           SIDEBAR MOBILE
+        ====================================================== */
+
+        function abrirSidebarMobile() {
+
+            document.body.classList.add(
+                "sidebar-mobile-aberta"
+            );
+
+        }
+
+
+        function fecharSidebarMobile() {
+
+            document.body.classList.remove(
+                "sidebar-mobile-aberta"
+            );
+
+        }
+
+
+        /* ======================================================
+           FECHAR SIDEBAR AO CLICAR EM LINK
+        ====================================================== */
+
+        document
+            .querySelectorAll("#sidebar a")
+            .forEach(function (link) {
+
+                link.addEventListener(
+                    "click",
+                    function () {
+
+                        fecharSidebarMobile();
+
+                    }
+                );
+
+            });
+
+
+        /* ======================================================
+           MODAL
+        ====================================================== */
+
+        let modalAcaoConfirmacao = null;
+
+
+        function abrirModal(
+            titulo,
+            mensagem,
+            tipo = "aviso",
+            confirmar = null
+        ) {
+
+            const overlay =
+                document.getElementById(
+                    "modal-overlay"
+                );
+
+            const modal =
+                document.getElementById(
+                    "modal"
+                );
+
+            const tituloElemento =
+                document.getElementById(
+                    "modal-titulo"
+                );
+
+            const mensagemElemento =
+                document.getElementById(
+                    "modal-mensagem"
+                );
+
+            const icone =
+                document.getElementById(
+                    "modal-icone"
+                );
+
+            const botaoCancelar =
+                document.getElementById(
+                    "modal-cancelar"
+                );
+
+            const botaoConfirmar =
+                document.getElementById(
+                    "modal-confirmar"
+                );
+
+
+            tituloElemento.textContent = titulo;
+
+            mensagemElemento.textContent = mensagem;
+
+
+            modal.classList.remove(
+                "modal-sucesso",
+                "modal-erro",
+                "modal-aviso",
+                "modal-confirmacao"
+            );
+
+
+            if (tipo === "sucesso") {
+
+                modal.classList.add(
+                    "modal-sucesso"
+                );
+
+                icone.textContent = "✓";
+
+            }
+
+            else if (tipo === "erro") {
+
+                modal.classList.add(
+                    "modal-erro"
+                );
+
+                icone.textContent = "×";
+
+            }
+
+            else if (tipo === "confirmacao") {
+
+                modal.classList.add(
+                    "modal-confirmacao"
+                );
+
+                icone.textContent = "?";
+
+            }
+
+            else {
+
+                modal.classList.add(
+                    "modal-aviso"
+                );
+
+                icone.textContent = "!";
+
+            }
+
+
+            if (confirmar) {
+
+                botaoCancelar.style.display = "block";
+
+                botaoConfirmar.style.display = "block";
+
+                botaoConfirmar.textContent =
+                    "Confirmar";
+
+                modalAcaoConfirmacao =
+                    confirmar;
+
+            }
+
+            else {
+
+                botaoCancelar.style.display = "none";
+
+                botaoConfirmar.style.display = "block";
+
+                botaoConfirmar.textContent =
+                    "OK";
+
+                modalAcaoConfirmacao = null;
+
+            }
+
+
+            overlay.hidden = false;
+
+            document.body.classList.add(
+                "modal-aberto"
+            );
+
+
+            setTimeout(function () {
+
+                botaoConfirmar.focus();
+
+            }, 50);
+
+        }
+
+
+        function fecharModal() {
+
+            const overlay =
+                document.getElementById(
+                    "modal-overlay"
+                );
+
+
+            overlay.hidden = true;
+
+            document.body.classList.remove(
+                "modal-aberto"
+            );
+
+            modalAcaoConfirmacao = null;
+
+        }
+
+
+        function mostrarSucesso(
+            titulo,
+            mensagem
+        ) {
+
+            abrirModal(
+                titulo,
+                mensagem,
+                "sucesso"
+            );
+
+        }
+
+
+        function mostrarErro(
+            titulo,
+            mensagem
+        ) {
+
+            abrirModal(
+                titulo,
+                mensagem,
+                "erro"
+            );
+
+        }
+
+
+        function mostrarAviso(
+            titulo,
+            mensagem
+        ) {
+
+            abrirModal(
+                titulo,
+                mensagem,
+                "aviso"
+            );
+
+        }
+
+
+        function mostrarConfirmacao(
+            titulo,
+            mensagem,
+            acao
+        ) {
+
+            abrirModal(
+                titulo,
+                mensagem,
+                "confirmacao",
+                acao
+            );
+
+        }
+
+
+        /* ======================================================
+           CONFIRMAR
+        ====================================================== */
+
+        document
+            .getElementById("modal-confirmar")
+            .addEventListener(
+                "click",
+                function () {
+
+                    if (modalAcaoConfirmacao) {
+
+                        const acao =
+                            modalAcaoConfirmacao;
+
+                        fecharModal();
+
+                        acao();
+
+                        return;
+
+                    }
+
+                    fecharModal();
+
+                }
+            );
+
+
+        /* ======================================================
+           CANCELAR
+        ====================================================== */
+
+        document
+            .getElementById("modal-cancelar")
+            .addEventListener(
+                "click",
+                function () {
+
+                    fecharModal();
+
+                }
+            );
+
+
+        /* ======================================================
+           CLICAR FORA DO MODAL
+        ====================================================== */
+
+        document
+            .getElementById("modal-overlay")
+            .addEventListener(
+                "click",
+                function (evento) {
+
+                    if (
+                        evento.target === this
+                    ) {
+
+                        fecharModal();
+
+                    }
+
+                }
+            );
+
+
+        /* ======================================================
+           ESC
+        ====================================================== */
+
+        document.addEventListener(
+            "keydown",
+            function (evento) {
+
+                if (evento.key === "Escape") {
+
+                    const overlay =
+                        document.getElementById(
+                            "modal-overlay"
+                        );
+
+
+                    if (!overlay.hidden) {
+
+                        fecharModal();
+
+                    }
+
+
+                    fecharSidebarMobile();
+
+                }
+
+            }
+        );
+
+
+        /* ======================================================
+           FLASH MESSAGES
+        ====================================================== */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                const mensagens =
+                    document.querySelectorAll(
+                        "#mensagens-flash [data-mensagem]"
+                    );
+
+
+                mensagens.forEach(
+                    function (elemento) {
+
+                        const categoria =
+                            elemento.dataset.categoria;
+
+                        const mensagem =
+                            elemento.dataset.mensagem;
+
+
+                        if (
+                            categoria === "success" ||
+                            categoria === "sucesso"
+                        ) {
+
+                            mostrarSucesso(
+                                "Sucesso",
+                                mensagem
+                            );
+
+                        }
+
+                        else if (
+                            categoria === "error" ||
+                            categoria === "erro"
+                        ) {
+
+                            mostrarErro(
+                                "Erro",
+                                mensagem
+                            );
+
+                        }
+
+                        else {
+
+                            mostrarAviso(
+                                "Aviso",
+                                mensagem
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+    </script>
+
+
+    {% block scripts %}
+    {% endblock %}
+
+</body>
+
+</html>

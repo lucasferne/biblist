@@ -1,0 +1,518 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Dashboard - Biblioteca
+{% endblock %}
+
+{% block content %}
+
+<div class="pagina-dashboard">
+
+    <!-- =====================================================
+         CABEÇALHO
+    ====================================================== -->
+
+    <header class="pagina-cabecalho">
+
+        <div>
+            <div class="pagina-breadcrumb">
+                <span>Principal</span>
+                <span>›</span>
+                <span>Dashboard</span>
+            </div>
+
+            <h1 class="pagina-titulo">
+                Dashboard
+            </h1>
+
+            <p class="pagina-subtitulo">
+                Bem-vindo, {{ current_user.nome }}!
+            </p>
+        </div>
+
+        <div class="dashboard-perfil">
+
+            <div class="dashboard-avatar">
+                {{ current_user.nome[0]|upper }}
+            </div>
+
+            <div class="dashboard-perfil-info">
+
+                <div class="dashboard-perfil-nome">
+                    {{ current_user.nome }}
+                </div>
+
+                <div class="dashboard-perfil-tipo">
+                    {% if current_user.admin %}
+                        Administrador
+                    {% else %}
+                        Usuário
+                    {% endif %}
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         VISÃO GERAL
+    ====================================================== -->
+
+    <section class="dashboard-secao">
+
+        <div class="secao-cabecalho">
+
+            <div>
+                <h2 class="secao-titulo">
+                    Visão geral
+                </h2>
+
+                <p class="secao-subtitulo">
+                    Resumo atual do acervo e da circulação.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-indicadores">
+
+            <!-- Livros -->
+
+            <div class="dashboard-indicador">
+
+                <div class="dashboard-indicador-conteudo">
+
+                    <p class="dashboard-indicador-label">
+                        Livros cadastrados
+                    </p>
+
+                    <p class="dashboard-indicador-valor">
+                        {{ total_livros }}
+                    </p>
+
+                </div>
+
+                <div class="dashboard-indicador-icone">
+                    📚
+                </div>
+
+            </div>
+
+
+            <!-- Exemplares -->
+
+            <div class="dashboard-indicador">
+
+                <div class="dashboard-indicador-conteudo">
+
+                    <p class="dashboard-indicador-label">
+                        Total de exemplares
+                    </p>
+
+                    <p class="dashboard-indicador-valor">
+                        {{ total_exemplares }}
+                    </p>
+
+                </div>
+
+                <div class="dashboard-indicador-icone">
+                    📦
+                </div>
+
+            </div>
+
+
+            <!-- Disponíveis -->
+
+            <div class="dashboard-indicador">
+
+                <div class="dashboard-indicador-conteudo">
+
+                    <p class="dashboard-indicador-label">
+                        Exemplares disponíveis
+                    </p>
+
+                    <p class="dashboard-indicador-valor">
+                        {{ exemplares_disponiveis }}
+                    </p>
+
+                </div>
+
+                <div class="dashboard-indicador-icone">
+                    ✅
+                </div>
+
+            </div>
+
+
+            <!-- Alunos -->
+
+            <div class="dashboard-indicador">
+
+                <div class="dashboard-indicador-conteudo">
+
+                    <p class="dashboard-indicador-label">
+                        Alunos cadastrados
+                    </p>
+
+                    <p class="dashboard-indicador-valor">
+                        {{ total_alunos }}
+                    </p>
+
+                </div>
+
+                <div class="dashboard-indicador-icone">
+                    🎓
+                </div>
+
+            </div>
+
+
+            <!-- Empréstimos ativos -->
+
+            <div class="dashboard-indicador">
+
+                <div class="dashboard-indicador-conteudo">
+
+                    <p class="dashboard-indicador-label">
+                        Empréstimos ativos
+                    </p>
+
+                    <p class="dashboard-indicador-valor">
+                        {{ emprestimos_ativos }}
+                    </p>
+
+                </div>
+
+                <div class="dashboard-indicador-icone">
+                    🔄
+                </div>
+
+            </div>
+
+
+            <!-- Atrasados -->
+
+            <div class="dashboard-indicador dashboard-indicador-atrasado">
+
+                <div class="dashboard-indicador-conteudo">
+
+                    <p class="dashboard-indicador-label">
+                        Empréstimos atrasados
+                    </p>
+
+                    <p class="dashboard-indicador-valor">
+                        {{ emprestimos_atrasados }}
+                    </p>
+
+                </div>
+
+                <div class="dashboard-indicador-icone">
+                    ⚠️
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         ACESSO RÁPIDO
+    ====================================================== -->
+
+    <section class="dashboard-secao">
+
+        <div class="secao-cabecalho">
+
+            <div>
+
+                <h2 class="secao-titulo">
+                    Acesso rápido
+                </h2>
+
+                <p class="secao-subtitulo">
+                    Acesse rapidamente as principais funções.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-acessos">
+
+            <!-- Livros -->
+
+            <a
+                href="{{ url_for('livros') }}"
+                class="dashboard-acesso"
+            >
+
+                <div class="dashboard-acesso-icone">
+                    📚
+                </div>
+
+                <div class="dashboard-acesso-conteudo">
+
+                    <div class="dashboard-acesso-titulo">
+                        Livros
+                    </div>
+
+                    <div class="dashboard-acesso-descricao">
+                        Gerenciar acervo
+                    </div>
+
+                </div>
+
+                <div class="dashboard-acesso-seta">
+                    →
+                </div>
+
+            </a>
+
+
+            <!-- Empréstimos -->
+
+            <a
+                href="{{ url_for('emprestimos') }}"
+                class="dashboard-acesso"
+            >
+
+                <div class="dashboard-acesso-icone">
+                    🔄
+                </div>
+
+                <div class="dashboard-acesso-conteudo">
+
+                    <div class="dashboard-acesso-titulo">
+                        Empréstimos
+                    </div>
+
+                    <div class="dashboard-acesso-descricao">
+                        Consultar empréstimos
+                    </div>
+
+                </div>
+
+                <div class="dashboard-acesso-seta">
+                    →
+                </div>
+
+            </a>
+
+
+            <!-- Alunos -->
+
+            <a
+                href="{{ url_for('alunos') }}"
+                class="dashboard-acesso"
+            >
+
+                <div class="dashboard-acesso-icone">
+                    🎓
+                </div>
+
+                <div class="dashboard-acesso-conteudo">
+
+                    <div class="dashboard-acesso-titulo">
+                        Alunos
+                    </div>
+
+                    <div class="dashboard-acesso-descricao">
+                        Consultar alunos
+                    </div>
+
+                </div>
+
+                <div class="dashboard-acesso-seta">
+                    →
+                </div>
+
+            </a>
+
+
+            <!-- Usuários -->
+
+            {% if current_user.admin %}
+
+            <a
+                href="{{ url_for('usuarios') }}"
+                class="dashboard-acesso"
+            >
+
+                <div class="dashboard-acesso-icone">
+                    👥
+                </div>
+
+                <div class="dashboard-acesso-conteudo">
+
+                    <div class="dashboard-acesso-titulo">
+                        Usuários
+                    </div>
+
+                    <div class="dashboard-acesso-descricao">
+                        Gerenciar usuários
+                    </div>
+
+                </div>
+
+                <div class="dashboard-acesso-seta">
+                    →
+                </div>
+
+            </a>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         EMPRÉSTIMOS RECENTES
+    ====================================================== -->
+
+    <section class="dashboard-secao">
+
+        <div class="dashboard-secao-cabecalho">
+
+            <div>
+
+                <h2 class="secao-titulo">
+                    Empréstimos recentes
+                </h2>
+
+                <p class="secao-subtitulo">
+                    Últimos empréstimos registrados no sistema.
+                </p>
+
+            </div>
+
+            <a
+                href="{{ url_for('emprestimos') }}"
+                class="dashboard-link"
+            >
+                Ver todos →
+            </a>
+
+        </div>
+
+
+        {% if emprestimos_recentes %}
+
+        <div class="tabela-container">
+
+            <table class="tabela">
+
+                <thead>
+
+                    <tr>
+                        <th>Livro</th>
+                        <th>Aluno</th>
+                        <th>Empréstimo</th>
+                        <th>Devolução prevista</th>
+                        <th>Situação</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for emprestimo in emprestimos_recentes %}
+
+                    <tr>
+
+                        <td>
+
+                            <div class="tabela-texto-principal">
+                                {{ emprestimo.livro.titulo }}
+                            </div>
+
+                        </td>
+
+                        <td>
+                            {{ emprestimo.aluno.nome }}
+                        </td>
+
+                        <td class="tabela-data">
+                            {{ emprestimo.data_emprestimo.strftime('%d/%m/%Y') }}
+                        </td>
+
+                        <td class="tabela-data">
+                            {{ emprestimo.data_devolucao_prevista.strftime('%d/%m/%Y') }}
+                        </td>
+
+                        <td>
+
+                            {% if emprestimo.status == "devolvido" %}
+
+                                <span class="status status-sucesso">
+                                    Devolvido
+                                </span>
+
+                            {% elif emprestimo.status == "atrasado" %}
+
+                                <span class="status status-erro">
+                                    Atrasado
+                                </span>
+
+                            {% else %}
+
+                                <span class="status status-aviso">
+                                    Emprestado
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        {% else %}
+
+        <div class="dashboard-vazio">
+
+            <div class="dashboard-vazio-icone">
+                📖
+            </div>
+
+            <h3 class="dashboard-vazio-titulo">
+                Nenhum empréstimo registrado
+            </h3>
+
+            <p class="dashboard-vazio-descricao">
+                Ainda não existem empréstimos registrados no sistema.
+            </p>
+
+            <a
+                href="{{ url_for('novo_emprestimo') }}"
+                class="botao botao-principal dashboard-vazio-botao"
+            >
+                Registrar empréstimo
+            </a>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+</div>
+
+{% endblock %}

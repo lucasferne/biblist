@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+
+{% block title %}
+Detalhes do Livro - Biblioteca
+{% endblock %}
+
+{% block content %}
+
+<div class="pagina-detalhes-livro">
+
+
+<header class="pagina-cabecalho">
+
+    <div>
+
+        <div class="pagina-breadcrumb">
+            <span>Biblioteca</span>
+            <span>›</span>
+            <span>Livros</span>
+            <span>›</span>
+            <span>Detalhes</span>
+        </div>
+
+        <h1 class="pagina-titulo">
+            Detalhes do livro
+        </h1>
+
+        <p class="pagina-subtitulo">
+            Informações cadastrais e disponibilidade do livro.
+        </p>
+
+    </div>
+
+</header>
+
+
+<section class="secao detalhes-livro-secao">
+
+    <div class="detalhes-livro-cabecalho">
+
+        <div class="detalhes-livro-identificacao">
+
+            <span class="detalhes-livro-id">
+                ID {{ livro.id }}
+            </span>
+
+            <h2 class="detalhes-livro-titulo">
+                {{ livro.titulo }}
+            </h2>
+
+            <p class="detalhes-livro-autor">
+                {{ livro.autor }}
+            </p>
+
+        </div>
+
+        <a
+            href="/livros/editar/{{ livro.id }}"
+            class="botao botao-principal detalhes-livro-botao-editar"
+            title="Editar livro"
+        >
+
+            <svg
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+            >
+                <path d="M12 20h9"></path>
+                <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 4-1-4Z"></path>
+            </svg>
+
+            <span>Editar livro</span>
+
+        </a>
+
+    </div>
+
+
+    <div class="detalhes-livro-divisor"></div>
+
+
+    <div class="detalhes-livro-grupo">
+
+        <h3 class="detalhes-livro-grupo-titulo">
+            Informações bibliográficas
+        </h3>
+
+        <div class="detalhes-livro-informacoes">
+
+            <div class="detalhes-livro-item">
+
+                <span class="detalhes-livro-label">
+                    ISBN
+                </span>
+
+                <span class="detalhes-livro-valor">
+                    {{ livro.isbn or "Não informado" }}
+                </span>
+
+            </div>
+
+
+            <div class="detalhes-livro-item">
+
+                <span class="detalhes-livro-label">
+                    Editora
+                </span>
+
+                <span class="detalhes-livro-valor">
+                    {{ livro.editora or "Não informada" }}
+                </span>
+
+            </div>
+
+
+            <div class="detalhes-livro-item">
+
+                <span class="detalhes-livro-label">
+                    Ano de publicação
+                </span>
+
+                <span class="detalhes-livro-valor">
+                    {{ livro.ano or "Não informado" }}
+                </span>
+
+            </div>
+
+
+            <div class="detalhes-livro-item">
+
+                <span class="detalhes-livro-label">
+                    Categoria
+                </span>
+
+                <span class="detalhes-livro-valor">
+                    {{ livro.categoria or "Não informada" }}
+                </span>
+
+            </div>
+
+
+            <div class="detalhes-livro-item">
+
+                <span class="detalhes-livro-label">
+                    Tipo de exemplar
+                </span>
+
+                <span class="detalhes-livro-valor">
+
+                    <span class="tipo-exemplar">
+                        {{ livro.tipo_exemplar }}
+                    </span>
+
+                </span>
+
+            </div>
+
+
+            <div class="detalhes-livro-item">
+
+                <span class="detalhes-livro-label">
+                    Localização
+                </span>
+
+                <span class="detalhes-livro-valor">
+                    {{ livro.localizacao or "Não informada" }}
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="detalhes-livro-divisor"></div>
+
+
+    <div class="detalhes-livro-grupo">
+
+        <h3 class="detalhes-livro-grupo-titulo">
+            Disponibilidade
+        </h3>
+
+        <div class="detalhes-livro-disponibilidade">
+
+            <div class="detalhes-livro-disponibilidade-item">
+
+                <span class="detalhes-livro-label">
+                    Quantidade total
+                </span>
+
+                <strong class="detalhes-livro-numero">
+                    {{ livro.quantidade }}
+                </strong>
+
+                <span class="detalhes-livro-descricao">
+                    exemplar{% if livro.quantidade != 1 %}es{% endif %} cadastrado{% if livro.quantidade != 1 %}s{% endif %}
+                </span>
+
+            </div>
+
+
+            <div class="detalhes-livro-disponibilidade-item">
+
+                <span class="detalhes-livro-label">
+                    Disponíveis
+                </span>
+
+                <strong class="detalhes-livro-numero">
+                    {{ livro.disponiveis }}
+                </strong>
+
+                <span class="detalhes-livro-descricao">
+                    exemplar{% if livro.disponiveis != 1 %}es{% endif %} disponível{% if livro.disponiveis != 1 %}is{% endif %}
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<div class="detalhes-pagina-acoes">
+
+    <a
+        href="/livros"
+        class="botao botao-secundario"
+    >
+        Voltar para livros
+    </a>
+
+</div>
+
+
+</div>
+
+{% endblock %}

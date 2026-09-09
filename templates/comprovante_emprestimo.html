@@ -1,0 +1,250 @@
+<!doctype html>
+
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Comprovante de Empréstimo</title>
+
+    <style>
+      @page {
+        size: A4;
+        margin: 20mm;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+
+        font-size: 12pt;
+
+        line-height: 1.5;
+
+        margin: 0;
+
+        color: #000;
+
+        background: #fff;
+      }
+
+      .documento {
+        max-width: 170mm;
+
+        margin: 0 auto;
+      }
+
+      .cabecalho {
+        text-align: center;
+
+        margin-bottom: 30px;
+      }
+
+      .cabecalho h1 {
+        margin: 0;
+
+        font-size: 22pt;
+      }
+
+      .cabecalho p {
+        margin: 5px 0 0;
+
+        font-size: 11pt;
+      }
+
+      .secao {
+        margin-top: 25px;
+      }
+
+      .secao h2 {
+        font-size: 15pt;
+
+        border-bottom: 1px solid #000;
+
+        padding-bottom: 5px;
+
+        margin-bottom: 12px;
+      }
+
+      .informacao {
+        margin: 6px 0;
+      }
+
+      .informacao strong {
+        display: inline-block;
+
+        min-width: 190px;
+      }
+
+      .situacao {
+        margin-top: 25px;
+
+        padding: 12px;
+
+        border: 1px solid #000;
+
+        text-align: center;
+
+        font-size: 14pt;
+      }
+
+      .rodape {
+        margin-top: 40px;
+
+        padding-top: 10px;
+
+        border-top: 1px solid #000;
+
+        text-align: center;
+
+        font-size: 9pt;
+      }
+
+      .acoes {
+        margin-top: 30px;
+
+        text-align: center;
+      }
+
+      .acoes button {
+        padding: 10px 20px;
+
+        margin: 5px;
+
+        cursor: pointer;
+      }
+
+      @media print {
+        .acoes {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="documento">
+      <header class="cabecalho">
+        <h1>COMPROVANTE DE EMPRÉSTIMO</h1>
+
+        <p>Sistema de Biblioteca</p>
+      </header>
+
+      <section class="secao">
+        <h2>Aluno</h2>
+
+        <p class="informacao">
+          <strong> Matrícula: </strong>
+
+          {{ emprestimo.aluno.matricula }}
+        </p>
+
+        <p class="informacao">
+          <strong> Nome: </strong>
+
+          {{ emprestimo.aluno.nome }}
+        </p>
+
+        <p class="informacao">
+          <strong> Turma: </strong>
+
+          {{ emprestimo.aluno.turma }}
+        </p>
+
+        <p class="informacao">
+          <strong> Telefone: </strong>
+
+          {{ emprestimo.aluno.telefone or "-" }}
+        </p>
+      </section>
+
+      <section class="secao">
+        <h2>Livro</h2>
+
+        <p class="informacao">
+          <strong> ISBN: </strong>
+
+          {{ emprestimo.livro.isbn or "-" }}
+        </p>
+
+        <p class="informacao">
+          <strong> Título: </strong>
+
+          {{ emprestimo.livro.titulo }}
+        </p>
+
+        <p class="informacao">
+          <strong> Autor: </strong>
+
+          {{ emprestimo.livro.autor }}
+        </p>
+
+        <p class="informacao">
+          <strong> Editora: </strong>
+
+          {{ emprestimo.livro.editora or "-" }}
+        </p>
+
+        <p class="informacao">
+          <strong> Ano de publicação: </strong>
+
+          {{ emprestimo.livro.ano or "-" }}
+        </p>
+
+        <p class="informacao">
+          <strong> Categoria: </strong>
+
+          {{ emprestimo.livro.categoria or "-" }}
+        </p>
+
+        <p class="informacao">
+          <strong> Localização: </strong>
+
+          {{ emprestimo.livro.localizacao or "-" }}
+        </p>
+      </section>
+
+      <section class="secao">
+        <h2>Datas</h2>
+
+        <p class="informacao">
+          <strong> Data do empréstimo: </strong>
+
+          {{ emprestimo.data_emprestimo.strftime('%d/%m/%Y') }}
+        </p>
+
+        <p class="informacao">
+          <strong> Devolução prevista: </strong>
+
+          {{ emprestimo.data_devolucao_prevista.strftime('%d/%m/%Y') }}
+        </p>
+
+        <p class="informacao">
+          <strong> Data da devolução: </strong>
+
+          {% if emprestimo.data_devolucao %} {{
+          emprestimo.data_devolucao.strftime('%d/%m/%Y') }} {% else %} Ainda não
+          devolvido {% endif %}
+        </p>
+      </section>
+
+      <section class="situacao">
+        <strong> Situação: </strong>
+
+        {% if emprestimo.status == "emprestado" %} Emprestado {% elif
+        emprestimo.status == "devolvido" %} Devolvido {% elif emprestimo.status
+        == "atrasado" %} Atrasado {% else %} {{ emprestimo.status }} {% endif %}
+      </section>
+
+      <footer class="rodape">
+        Documento gerado em: {{ data_geracao.strftime('%d/%m/%Y às %H:%M:%S') }}
+      </footer>
+
+      <div class="acoes">
+        <button type="button" onclick="window.print()">Salvar como PDF</button>
+
+        <button type="button" onclick="window.close()">Fechar</button>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,1021 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Empréstimos - Biblioteca
+{% endblock %}
+
+{% block content %}
+
+<div class="pagina-emprestimos">
+
+    <header class="pagina-cabecalho">
+
+        <div>
+
+            <div class="pagina-breadcrumb">
+                <span>Biblioteca</span>
+                <span>›</span>
+                <span>Empréstimos</span>
+            </div>
+
+            <h1 class="pagina-titulo">
+                Empréstimos
+            </h1>
+
+            <p class="pagina-subtitulo">
+                Gerenciamento dos empréstimos de livros.
+            </p>
+
+        </div>
+
+        <a
+            href="/emprestimos/novo"
+            class="botao botao-principal"
+        >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 5v14"></path>
+                <path d="M5 12h14"></path>
+            </svg>
+
+            <span>Novo empréstimo</span>
+        </a>
+
+    </header>
+
+
+    <!-- =====================================================
+         PESQUISA
+         ===================================================== -->
+
+    <section class="secao">
+
+        <div class="secao-cabecalho">
+
+            <div>
+
+                <h2 class="secao-titulo">
+                    Pesquisar empréstimos
+                </h2>
+
+                <p class="secao-subtitulo">
+                    Consulte por livro, aluno, matrícula, turma ou status.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <form
+            action="/emprestimos"
+            method="GET"
+            class="pesquisa-formulario"
+        >
+
+            <div class="pesquisa-campo">
+
+                <label
+                    for="pesquisa"
+                    class="campo-pesquisa-label"
+                >
+                    Pesquisa
+                </label>
+
+                <input
+                    type="text"
+                    id="pesquisa"
+                    name="pesquisa"
+                    class="campo-input"
+                    value="{{ pesquisa }}"
+                    placeholder="Livro, autor, matrícula, aluno, turma, status..."
+                >
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="botao botao-principal"
+            >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <path d="m20 20-4-4"></path>
+                </svg>
+
+                <span>Pesquisar</span>
+            </button>
+
+
+            {% if pesquisa %}
+
+            <a
+                href="/emprestimos"
+                class="botao botao-secundario"
+            >
+                Limpar
+            </a>
+
+            {% endif %}
+
+        </form>
+
+    </section>
+
+
+    <!-- =====================================================
+         EMPRÉSTIMOS CADASTRADOS
+         ===================================================== -->
+
+    <section class="secao">
+
+        <div class="secao-cabecalho">
+
+            <div>
+
+                <h2 class="secao-titulo">
+                    Empréstimos cadastrados
+                </h2>
+
+                {% if pesquisa %}
+
+                <p class="secao-subtitulo">
+                    Resultados para:
+                    <strong>"{{ pesquisa }}"</strong>
+                </p>
+
+                {% else %}
+
+                <p class="secao-subtitulo">
+                    Empréstimos registrados no sistema.
+                </p>
+
+                {% endif %}
+
+            </div>
+
+
+            {% if emprestimos %}
+
+            <span class="lista-contador">
+                {{ emprestimos|length }}
+
+                {% if emprestimos|length == 1 %}
+                    empréstimo
+                {% else %}
+                    empréstimos
+                {% endif %}
+            </span>
+
+            {% endif %}
+
+        </div>
+
+
+        {% if emprestimos %}
+
+        <div class="tabela-container">
+
+            <table
+                class="tabela tabela-emprestimos tabela-redimensionavel"
+                id="tabela-emprestimos"
+            >
+
+                <colgroup>
+
+                    <col data-coluna="livro">
+                    <col data-coluna="matricula">
+                    <col data-coluna="aluno">
+                    <col data-coluna="turma">
+                    <col data-coluna="emprestimo">
+                    <col data-coluna="devolucao">
+                    <col data-coluna="status">
+                    <col data-coluna="acoes">
+
+                </colgroup>
+
+
+                <thead>
+
+                    <tr>
+
+                        <th data-coluna="livro">
+                            <div class="cabecalho-coluna">
+                                <span>Livro</span>
+                                <span
+                                    class="redimensionador"
+                                    data-redimensionar="livro"
+                                    aria-hidden="true"
+                                ></span>
+                            </div>
+                        </th>
+
+
+                        <th data-coluna="matricula">
+                            <div class="cabecalho-coluna">
+                                <span>Matrícula</span>
+                                <span
+                                    class="redimensionador"
+                                    data-redimensionar="matricula"
+                                    aria-hidden="true"
+                                ></span>
+                            </div>
+                        </th>
+
+
+                        <th data-coluna="aluno">
+                            <div class="cabecalho-coluna">
+                                <span>Aluno</span>
+                                <span
+                                    class="redimensionador"
+                                    data-redimensionar="aluno"
+                                    aria-hidden="true"
+                                ></span>
+                            </div>
+                        </th>
+
+
+                        <th data-coluna="turma">
+                            <div class="cabecalho-coluna">
+                                <span>Turma</span>
+                                <span
+                                    class="redimensionador"
+                                    data-redimensionar="turma"
+                                    aria-hidden="true"
+                                ></span>
+                            </div>
+                        </th>
+
+
+                        <th data-coluna="emprestimo">
+                            <div class="cabecalho-coluna">
+                                <span>Empréstimo</span>
+                                <span
+                                    class="redimensionador"
+                                    data-redimensionar="emprestimo"
+                                    aria-hidden="true"
+                                ></span>
+                            </div>
+                        </th>
+
+
+                        <th data-coluna="devolucao">
+                            <div class="cabecalho-coluna">
+                                <span>Devolução</span>
+                                <span
+                                    class="redimensionador"
+                                    data-redimensionar="devolucao"
+                                    aria-hidden="true"
+                                ></span>
+                            </div>
+                        </th>
+
+
+                        <th data-coluna="status">
+                            <div class="cabecalho-coluna">
+                                <span>Status</span>
+                                <span
+                                    class="redimensionador"
+                                    data-redimensionar="status"
+                                    aria-hidden="true"
+                                ></span>
+                            </div>
+                        </th>
+
+
+                        <th data-coluna="acoes">
+                            <div class="cabecalho-coluna">
+                                <span>Ações</span>
+                            </div>
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for emprestimo in emprestimos %}
+
+                    <tr>
+
+                        <!-- LIVRO -->
+
+                        <td>
+
+                            <div class="tabela-celula-ellipsis">
+
+                                <span class="tabela-texto-principal">
+                                    {{ emprestimo.livro.titulo }}
+                                </span>
+
+                                <span class="tabela-texto-secundario">
+                                    {{ emprestimo.livro.autor }}
+                                </span>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- MATRÍCULA -->
+
+                        <td>
+
+                            <span class="tabela-celula-ellipsis tabela-id">
+                                {{ emprestimo.aluno.matricula }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- ALUNO -->
+
+                        <td>
+
+                            <span class="tabela-celula-ellipsis tabela-texto-principal">
+                                {{ emprestimo.aluno.nome }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- TURMA -->
+
+                        <td>
+
+                            <span class="tabela-celula-ellipsis">
+                                {{ emprestimo.aluno.turma }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- DATA DO EMPRÉSTIMO -->
+
+                        <td>
+
+                            <span class="tabela-data">
+                                {{ emprestimo.data_emprestimo.strftime('%d/%m/%Y') }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- DEVOLUÇÃO -->
+
+                        <td>
+
+                            {% if emprestimo.status == "devolvido" %}
+
+                                <span class="data-devolucao data-devolucao-verde">
+                                    {{ emprestimo.data_devolucao.strftime('%d/%m/%Y') }}
+                                </span>
+
+                            {% elif emprestimo.status == "atrasado" %}
+
+                                <span class="data-devolucao data-devolucao-vermelha">
+                                    {{ emprestimo.data_devolucao_prevista.strftime('%d/%m/%Y') }}
+                                </span>
+
+                            {% elif emprestimo.status == "emprestado" %}
+
+                                <span class="data-devolucao data-devolucao-amarela">
+                                    {{ emprestimo.data_devolucao_prevista.strftime('%d/%m/%Y') }}
+                                </span>
+
+                            {% else %}
+
+                                <span class="data-devolucao">
+                                    —
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- STATUS -->
+
+                        <td>
+
+                            {% if emprestimo.status == "emprestado" %}
+
+                                <span class="status status-emprestado">
+                                    Emprestado
+                                </span>
+
+                            {% elif emprestimo.status == "devolvido" %}
+
+                                <span class="status status-devolvido">
+                                    Devolvido
+                                </span>
+
+                            {% elif emprestimo.status == "atrasado" %}
+
+                                <span class="status status-atrasado">
+                                    Atrasado
+                                </span>
+
+                            {% else %}
+
+                                <span class="status">
+                                    {{ emprestimo.status }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- AÇÕES -->
+
+                        <td>
+
+                            <div class="tabela-acoes">
+
+                                <!-- VER DETALHES -->
+
+                                <a
+                                    href="/emprestimos/detalhes/{{ emprestimo.id }}"
+                                    class="botao botao-icone"
+                                    title="Ver detalhes"
+                                    aria-label="Ver detalhes"
+                                >
+
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"></path>
+                                        <circle cx="12" cy="12" r="2.5"></circle>
+                                    </svg>
+
+                                </a>
+
+
+                                <!-- REGISTRAR DEVOLUÇÃO -->
+
+                                {% if emprestimo.status == "emprestado"
+                                    or emprestimo.status == "atrasado" %}
+
+                                <form
+                                    action="/emprestimos/devolver/{{ emprestimo.id }}"
+                                    method="POST"
+                                    class="tabela-formulario"
+                                    onsubmit="confirmarDevolucao(
+                                        event,
+                                        this,
+                                        '{{ emprestimo.livro.titulo|e }}'
+                                    )"
+                                >
+
+                                    <button
+                                        type="submit"
+                                        class="botao botao-icone botao-devolver"
+                                        title="Registrar devolução"
+                                        aria-label="Registrar devolução"
+                                    >
+
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            aria-hidden="true"
+                                        >
+                                            <path d="M3 12h14"></path>
+                                            <path d="M13 7l5 5-5 5"></path>
+                                            <path d="M21 5v14"></path>
+                                        </svg>
+
+                                    </button>
+
+                                </form>
+
+                                {% endif %}
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        {% else %}
+
+        <div class="estado-vazio">
+
+            <div class="estado-vazio-icone">
+                📚
+            </div>
+
+            {% if pesquisa %}
+
+                <h3 class="estado-vazio-titulo">
+                    Nenhum empréstimo encontrado
+                </h3>
+
+                <p class="estado-vazio-descricao">
+                    Nenhum empréstimo corresponde à pesquisa
+                    "{{ pesquisa }}".
+                </p>
+
+            {% else %}
+
+                <h3 class="estado-vazio-titulo">
+                    Nenhum empréstimo cadastrado
+                </h3>
+
+                <p class="estado-vazio-descricao">
+                    Ainda não existem empréstimos registrados no sistema.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+</div>
+
+
+<script>
+
+function confirmarDevolucao(
+    evento,
+    formulario,
+    tituloLivro
+) {
+
+    evento.preventDefault();
+
+    mostrarConfirmacao(
+        "Confirmar devolução",
+        `Deseja realmente registrar a devolução do livro "${tituloLivro}"?`,
+        function () {
+            formulario.submit();
+        }
+    );
+
+}
+
+
+/* ============================================================
+   REDIMENSIONAMENTO DAS COLUNAS
+   ============================================================ */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const tabela =
+            document.getElementById("tabela-emprestimos");
+
+        if (!tabela) {
+            return;
+        }
+
+
+        const colunas =
+            Array.from(
+                tabela.querySelectorAll(
+                    "colgroup col"
+                )
+            );
+
+
+        const redimensionadores =
+            tabela.querySelectorAll(
+                ".redimensionador"
+            );
+
+
+        const chaveStorage =
+            "biblioteca-emprestimos-colunas";
+
+
+        const largurasMinimas = {
+
+            livro: 180,
+            matricula: 85,
+            aluno: 120,
+            turma: 70,
+            emprestimo: 105,
+            devolucao: 105,
+            status: 95,
+            acoes: 82
+
+        };
+
+
+        function obterLargurasSalvas() {
+
+            try {
+
+                const dados =
+                    localStorage.getItem(
+                        chaveStorage
+                    );
+
+                if (!dados) {
+                    return null;
+                }
+
+                return JSON.parse(dados);
+
+            } catch (erro) {
+
+                return null;
+
+            }
+
+        }
+
+
+        function salvarLarguras() {
+
+            const larguras = {};
+
+            colunas.forEach(
+                function (coluna) {
+
+                    const nome =
+                        coluna.dataset.coluna;
+
+                    larguras[nome] =
+                        coluna.getBoundingClientRect().width;
+
+                }
+            );
+
+
+            try {
+
+                localStorage.setItem(
+                    chaveStorage,
+                    JSON.stringify(larguras)
+                );
+
+            } catch (erro) {
+
+                // O funcionamento continua normalmente
+                // mesmo que o navegador bloqueie o armazenamento.
+
+            }
+
+        }
+
+
+        function aplicarLargurasIniciais() {
+
+            const largurasSalvas =
+                obterLargurasSalvas();
+
+
+            if (largurasSalvas) {
+
+                const larguraTabela =
+                    tabela.getBoundingClientRect().width;
+
+                const larguraTotalSalva =
+                    Object.values(largurasSalvas)
+                        .reduce(
+                            function (total, largura) {
+                                return total + largura;
+                            },
+                            0
+                        );
+
+
+                if (
+                    larguraTotalSalva > 0 &&
+                    larguraTabela > 0
+                ) {
+
+                    colunas.forEach(
+                        function (coluna) {
+
+                            const nome =
+                                coluna.dataset.coluna;
+
+                            if (
+                                largurasSalvas[nome]
+                            ) {
+
+                                coluna.style.width =
+                                    (
+                                        largurasSalvas[nome] /
+                                        larguraTotalSalva
+                                    ) * 100 + "%";
+
+                            }
+
+                        }
+                    );
+
+                    return;
+
+                }
+
+            }
+
+
+            const largurasIniciais = {
+
+                livro: 22,
+                matricula: 9,
+                aluno: 15,
+                turma: 8,
+                emprestimo: 11,
+                devolucao: 11,
+                status: 10,
+                acoes: 7
+
+            };
+
+
+            colunas.forEach(
+                function (coluna) {
+
+                    const nome =
+                        coluna.dataset.coluna;
+
+                    coluna.style.width =
+                        largurasIniciais[nome] + "%";
+
+                }
+            );
+
+        }
+
+
+        aplicarLargurasIniciais();
+
+
+        let redimensionamento = null;
+
+
+        redimensionadores.forEach(
+            function (redimensionador) {
+
+                redimensionador.addEventListener(
+                    "mousedown",
+                    function (evento) {
+
+                        evento.preventDefault();
+                        evento.stopPropagation();
+
+
+                        const nomeColuna =
+                            redimensionador.dataset.redimensionar;
+
+
+                        const indice =
+                            colunas.findIndex(
+                                function (coluna) {
+                                    return coluna.dataset.coluna === nomeColuna;
+                                }
+                            );
+
+
+                        if (
+                            indice < 0 ||
+                            indice >= colunas.length - 1
+                        ) {
+                            return;
+                        }
+
+
+                        const colunaAtual =
+                            colunas[indice];
+
+                        const colunaSeguinte =
+                            colunas[indice + 1];
+
+
+                        redimensionamento = {
+
+                            indice: indice,
+
+                            colunaAtual:
+                                colunaAtual,
+
+                            colunaSeguinte:
+                                colunaSeguinte,
+
+                            inicioX:
+                                evento.clientX,
+
+                            larguraAtual:
+                                colunaAtual.getBoundingClientRect().width,
+
+                            larguraSeguinte:
+                                colunaSeguinte.getBoundingClientRect().width
+
+                        };
+
+
+                        document.body.classList.add(
+                            "redimensionando-coluna"
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+        document.addEventListener(
+            "mousemove",
+            function (evento) {
+
+                if (!redimensionamento) {
+                    return;
+                }
+
+
+                const deslocamento =
+                    evento.clientX -
+                    redimensionamento.inicioX;
+
+
+                let novaLarguraAtual =
+                    redimensionamento.larguraAtual +
+                    deslocamento;
+
+
+                let novaLarguraSeguinte =
+                    redimensionamento.larguraSeguinte -
+                    deslocamento;
+
+
+                const nomeAtual =
+                    redimensionamento
+                        .colunaAtual
+                        .dataset
+                        .coluna;
+
+
+                const nomeSeguinte =
+                    redimensionamento
+                        .colunaSeguinte
+                        .dataset
+                        .coluna;
+
+
+                const minimoAtual =
+                    largurasMinimas[nomeAtual] || 60;
+
+
+                const minimoSeguinte =
+                    largurasMinimas[nomeSeguinte] || 60;
+
+
+                if (
+                    novaLarguraAtual <
+                    minimoAtual
+                ) {
+
+                    novaLarguraAtual =
+                        minimoAtual;
+
+                    novaLarguraSeguinte =
+                        redimensionamento.larguraAtual +
+                        redimensionamento.larguraSeguinte -
+                        novaLarguraAtual;
+
+                }
+
+
+                if (
+                    novaLarguraSeguinte <
+                    minimoSeguinte
+                ) {
+
+                    novaLarguraSeguinte =
+                        minimoSeguinte;
+
+                    novaLarguraAtual =
+                        redimensionamento.larguraAtual +
+                        redimensionamento.larguraSeguinte -
+                        novaLarguraSeguinte;
+
+                }
+
+
+                redimensionamento
+                    .colunaAtual
+                    .style
+                    .width =
+                    novaLarguraAtual + "px";
+
+
+                redimensionamento
+                    .colunaSeguinte
+                    .style
+                    .width =
+                    novaLarguraSeguinte + "px";
+
+            }
+        );
+
+
+        document.addEventListener(
+            "mouseup",
+            function () {
+
+                if (!redimensionamento) {
+                    return;
+                }
+
+
+                salvarLarguras();
+
+
+                redimensionamento = null;
+
+
+                document.body.classList.remove(
+                    "redimensionando-coluna"
+                );
+
+            }
+        );
+
+
+        window.addEventListener(
+            "resize",
+            function () {
+
+                if (redimensionamento) {
+                    return;
+                }
+
+
+                const larguraTabela =
+                    tabela.getBoundingClientRect().width;
+
+
+                if (larguraTabela <= 0) {
+                    return;
+                }
+
+
+                const largurasAtuais =
+                    colunas.map(
+                        function (coluna) {
+
+                            return {
+                                coluna: coluna,
+                                largura:
+                                    coluna.getBoundingClientRect().width
+                            };
+
+                        }
+                    );
+
+
+                const soma =
+                    largurasAtuais.reduce(
+                        function (total, item) {
+                            return total + item.largura;
+                        },
+                        0
+                    );
+
+
+                if (soma <= 0) {
+                    return;
+                }
+
+
+                largurasAtuais.forEach(
+                    function (item) {
+
+                        item.coluna.style.width =
+                            (
+                                item.largura /
+                                soma
+                            ) * 100 + "%";
+
+                    }
+                );
+
+            }
+        );
+
+    }
+);
+
+</script>
+
+{% endblock %}

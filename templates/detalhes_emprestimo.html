@@ -1,0 +1,154 @@
+{% extends "base.html" %} {% block title %} Detalhes do Empréstimo - Biblioteca
+{% endblock %} {% block content %}
+
+<div class="detalhes-emprestimo">
+  <h1>Detalhes do Empréstimo</h1>
+
+  <p>
+    <strong> Empréstimo nº: </strong>
+
+    {{ emprestimo.id }}
+  </p>
+
+  <hr />
+
+  <h2>Aluno</h2>
+
+  <p>
+    <strong>ID:</strong>
+    {{ emprestimo.aluno.id }}
+  </p>
+
+  <p>
+    <strong>Matrícula:</strong>
+    {{ emprestimo.aluno.matricula }}
+  </p>
+
+  <p>
+    <strong>Nome:</strong>
+    {{ emprestimo.aluno.nome }}
+  </p>
+
+  <p>
+    <strong>Turma:</strong>
+    {{ emprestimo.aluno.turma }}
+  </p>
+
+  <p>
+    <strong>Telefone:</strong>
+    {{ emprestimo.aluno.telefone or "-" }}
+  </p>
+
+  <hr />
+
+  <h2>Livro</h2>
+
+  <p>
+    <strong>ID:</strong>
+    {{ emprestimo.livro.id }}
+  </p>
+
+  <p>
+    <strong>ISBN:</strong>
+    {{ emprestimo.livro.isbn or "-" }}
+  </p>
+
+  <p>
+    <strong>Título:</strong>
+    {{ emprestimo.livro.titulo }}
+  </p>
+
+  <p>
+    <strong>Autor:</strong>
+    {{ emprestimo.livro.autor }}
+  </p>
+
+  <p>
+    <strong>Editora:</strong>
+    {{ emprestimo.livro.editora or "-" }}
+  </p>
+
+  <p>
+    <strong>Ano de publicação:</strong>
+    {{ emprestimo.livro.ano or "-" }}
+  </p>
+
+  <p>
+    <strong>Categoria:</strong>
+    {{ emprestimo.livro.categoria or "-" }}
+  </p>
+
+  <p>
+    <strong>Localização:</strong>
+    {{ emprestimo.livro.localizacao or "-" }}
+  </p>
+
+  <hr />
+
+  <h2>Datas</h2>
+
+  <p>
+    <strong>Data do empréstimo:</strong>
+
+    {{ emprestimo.data_emprestimo.strftime('%d/%m/%Y') }}
+  </p>
+
+  <p>
+    <strong>Devolução prevista:</strong>
+
+    {{ emprestimo.data_devolucao_prevista.strftime('%d/%m/%Y') }}
+  </p>
+
+  <p>
+    <strong>Data da devolução:</strong>
+
+    {% if emprestimo.data_devolucao %} {{
+    emprestimo.data_devolucao.strftime('%d/%m/%Y') }} {% else %} Ainda não
+    devolvido {% endif %}
+  </p>
+
+  <hr />
+
+  <h2>Situação do empréstimo</h2>
+
+  <p>
+    {% if emprestimo.status == "emprestado" %}
+
+    <strong> Emprestado </strong>
+
+    {% elif emprestimo.status == "devolvido" %} Devolvido {% elif
+    emprestimo.status == "atrasado" %}
+
+    <strong> Atrasado </strong>
+
+    {% else %} {{ emprestimo.status }} {% endif %}
+  </p>
+
+  <hr />
+
+  <p>
+    <strong> Detalhes gerados em: </strong>
+
+    {{ data_geracao.strftime('%d/%m/%Y às %H:%M:%S') }}
+  </p>
+
+  <br />
+
+  <div class="acoes-detalhes">
+    <button type="button" onclick="abrirComprovante()">Salvar como PDF</button>
+
+    <a href="/emprestimos">
+      <button type="button">Voltar</button>
+    </a>
+  </div>
+</div>
+
+<script>
+  function abrirComprovante() {
+    const url = "/emprestimos/pdf/{{ emprestimo.id }}";
+
+    window.open(url, "_blank");
+  }
+</script>
+
+{% endblock %}

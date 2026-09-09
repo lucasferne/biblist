@@ -1,0 +1,383 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Editar Livro - Biblioteca
+{% endblock %}
+
+{% block content %}
+
+<div class="pagina-editar-livro">
+
+    <header class="pagina-cabecalho">
+
+        <div>
+
+            <div class="pagina-breadcrumb">
+                <span>Biblioteca</span>
+                <span>›</span>
+                <span>Livros</span>
+                <span>›</span>
+                <span>Editar</span>
+            </div>
+
+            <h1 class="pagina-titulo">
+                Editar livro
+            </h1>
+
+            <p class="pagina-subtitulo">
+                Atualize as informações cadastrais e a quantidade de exemplares.
+            </p>
+
+        </div>
+
+    </header>
+
+
+    <form
+        action="/livros/editar/{{ livro.id }}"
+        method="POST"
+        class="editar-livro-formulario"
+    >
+
+        <!-- =====================================================
+             IDENTIFICAÇÃO
+             ===================================================== -->
+
+        <section class="secao editar-livro-secao">
+
+            <div class="editar-livro-identificacao">
+
+                <h2 class="editar-livro-titulo">
+                    {{ livro.titulo }}
+                </h2>
+
+                <p class="editar-livro-autor">
+                    {{ livro.autor }}
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             INFORMAÇÕES BIBLIOGRÁFICAS
+             ===================================================== -->
+
+        <section class="secao editar-livro-secao">
+
+            <div class="secao-cabecalho">
+
+                <div>
+
+                    <h2 class="secao-titulo">
+                        Informações bibliográficas
+                    </h2>
+
+                    <p class="secao-subtitulo">
+                        Dados básicos para identificação do livro.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="editar-livro-grade">
+
+                <div class="editar-livro-campo campo-largo">
+
+                    <label
+                        for="titulo"
+                        class="editar-livro-label"
+                    >
+                        Título
+                    </label>
+
+                    <input
+                        type="text"
+                        id="titulo"
+                        name="titulo"
+                        class="editar-livro-input"
+                        value="{{ livro.titulo }}"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="editar-livro-campo">
+
+                    <label
+                        for="autor"
+                        class="editar-livro-label"
+                    >
+                        Autor
+                    </label>
+
+                    <input
+                        type="text"
+                        id="autor"
+                        name="autor"
+                        class="editar-livro-input"
+                        value="{{ livro.autor }}"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="editar-livro-campo">
+
+                    <label
+                        for="isbn"
+                        class="editar-livro-label"
+                    >
+                        ISBN
+                    </label>
+
+                    <input
+                        type="text"
+                        id="isbn"
+                        name="isbn"
+                        class="editar-livro-input"
+                        value="{{ livro.isbn or '' }}"
+                    >
+
+                </div>
+
+
+                <div class="editar-livro-campo">
+
+                    <label
+                        for="editora"
+                        class="editar-livro-label"
+                    >
+                        Editora
+                    </label>
+
+                    <input
+                        type="text"
+                        id="editora"
+                        name="editora"
+                        class="editar-livro-input"
+                        value="{{ livro.editora or '' }}"
+                    >
+
+                </div>
+
+
+                <div class="editar-livro-campo">
+
+                    <label
+                        for="ano"
+                        class="editar-livro-label"
+                    >
+                        Ano de publicação
+                    </label>
+
+                    <input
+                        type="number"
+                        id="ano"
+                        name="ano"
+                        class="editar-livro-input"
+                        value="{{ livro.ano or '' }}"
+                    >
+
+                </div>
+
+
+                <div class="editar-livro-campo">
+
+                    <label
+                        for="categoria"
+                        class="editar-livro-label"
+                    >
+                        Categoria
+                    </label>
+
+                    <input
+                        type="text"
+                        id="categoria"
+                        name="categoria"
+                        class="editar-livro-input"
+                        value="{{ livro.categoria or '' }}"
+                    >
+
+                </div>
+
+
+                <div class="editar-livro-campo">
+
+                    <label
+                        for="tipo_exemplar"
+                        class="editar-livro-label"
+                    >
+                        Tipo de exemplar
+                    </label>
+
+                    <select
+                        id="tipo_exemplar"
+                        name="tipo_exemplar"
+                        class="editar-livro-input"
+                        required
+                    >
+
+                        <option
+                            value="Original"
+                            {% if livro.tipo_exemplar == "Original" %}
+                                selected
+                            {% endif %}
+                        >
+                            Original
+                        </option>
+
+                        <option
+                            value="Cópia encadernada"
+                            {% if livro.tipo_exemplar == "Cópia encadernada" %}
+                                selected
+                            {% endif %}
+                        >
+                            Cópia encadernada
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="editar-livro-campo">
+
+                    <label
+                        for="localizacao"
+                        class="editar-livro-label"
+                    >
+                        Localização
+                    </label>
+
+                    <input
+                        type="text"
+                        id="localizacao"
+                        name="localizacao"
+                        class="editar-livro-input"
+                        value="{{ livro.localizacao or '' }}"
+                    >
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             EXEMPLARES
+             ===================================================== -->
+
+        <section class="secao editar-livro-secao">
+
+            <div class="secao-cabecalho">
+
+                <div>
+
+                    <h2 class="secao-titulo">
+                        Exemplares
+                    </h2>
+
+                    <p class="secao-subtitulo">
+                        Altere a quantidade total de exemplares cadastrados.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="editar-livro-exemplares">
+
+                <div class="editar-livro-campo editar-livro-campo-quantidade">
+
+                    <label
+                        for="quantidade"
+                        class="editar-livro-label"
+                    >
+                        Quantidade total
+                    </label>
+
+                    <input
+                        type="number"
+                        id="quantidade"
+                        name="quantidade"
+                        class="editar-livro-input"
+                        min="1"
+                        value="{{ livro.quantidade }}"
+                        required
+                    >
+
+                    <span class="editar-livro-ajuda">
+                        Atualmente existem {{ livro.quantidade }} exemplar{% if livro.quantidade != 1 %}es{% endif %} cadastrados.
+                    </span>
+
+                </div>
+
+
+                <div class="editar-livro-disponibilidade">
+
+                    <span class="editar-livro-label">
+                        Disponíveis atualmente
+                    </span>
+
+                    <strong class="editar-livro-numero">
+                        {{ livro.disponiveis }}
+                    </strong>
+
+                    <span class="editar-livro-ajuda">
+                        exemplar{% if livro.disponiveis != 1 %}es{% endif %} disponível{% if livro.disponiveis != 1 %}is{% endif %}
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             AÇÕES
+             ===================================================== -->
+
+        <div class="editar-livro-acoes">
+
+            <a
+                href="/livros"
+                class="botao botao-secundario"
+            >
+                Voltar para livros
+            </a>
+
+
+            <button
+                type="submit"
+                class="botao botao-principal editar-livro-botao-salvar"
+            >
+
+                <svg
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                >
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"></path>
+                    <path d="M17 21v-8H7v8"></path>
+                    <path d="M7 3v5h8"></path>
+                </svg>
+
+                <span>Salvar alterações</span>
+
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

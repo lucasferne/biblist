@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Login - Biblioteca</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+</head>
+
+
+<body class="pagina-login">
+
+    <main class="login-pagina">
+
+        <div class="login-container">
+
+            <section class="login-card">
+
+
+                <!-- =================================================
+                     CABEÇALHO
+                ================================================== -->
+
+                <header class="login-cabecalho">
+
+                    <div class="login-logo">
+                        📚
+                    </div>
+
+
+                    <h1 class="login-titulo">
+                        Biblioteca
+                    </h1>
+
+
+                    <p class="login-subtitulo">
+                        Sistema de gerenciamento da biblioteca
+                    </p>
+
+                </header>
+
+
+                <!-- =================================================
+                     FORMULÁRIO
+                ================================================== -->
+
+                <div class="login-formulario">
+
+
+                    {% with mensagens = get_flashed_messages(with_categories=true) %}
+
+                        {% for categoria, mensagem in mensagens %}
+
+                            <div
+                                class="
+                                    login-alerta
+                                    {% if categoria == 'error' or categoria == 'erro' %}
+                                        login-alerta-erro
+                                    {% else %}
+                                        login-alerta-sucesso
+                                    {% endif %}
+                                "
+                            >
+
+                                {{ mensagem }}
+
+                            </div>
+
+                        {% endfor %}
+
+                    {% endwith %}
+
+
+                    <form
+                        method="POST"
+                        action="{{ url_for('login') }}"
+                    >
+
+
+                        <!-- E-MAIL -->
+
+                        <div class="login-campo">
+
+                            <label
+                                for="email"
+                                class="login-label"
+                            >
+                                E-mail
+                            </label>
+
+
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                class="login-input"
+                                placeholder="Digite seu e-mail"
+                                autocomplete="email"
+                                required
+                                autofocus
+                            >
+
+                        </div>
+
+
+                        <!-- SENHA -->
+
+                        <div class="login-campo">
+
+                            <label
+                                for="senha"
+                                class="login-label"
+                            >
+                                Senha
+                            </label>
+
+
+                            <input
+                                id="senha"
+                                name="senha"
+                                type="password"
+                                class="login-input"
+                                placeholder="Digite sua senha"
+                                autocomplete="current-password"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- BOTÃO -->
+
+                        <button
+                            type="submit"
+                            class="login-botao"
+                        >
+                            Entrar
+                        </button>
+
+                    </form>
+
+                </div>
+
+
+                <!-- =================================================
+                     RODAPÉ
+                ================================================== -->
+
+                <footer class="login-rodape">
+
+                    Sistema de gerenciamento de biblioteca
+
+                </footer>
+
+
+            </section>
+
+        </div>
+
+    </main>
+
+</body>
+
+</html>
+
