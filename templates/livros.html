@@ -27,18 +27,33 @@
   <section class="secao secao-recolhivel">
     <button
       type="button"
-      class="secao-recolhivel-cabecalho"
+      class="acao-recolhivel-cabecalho"
       onclick="alternarCadastroLivro()"
     >
-      <div>
-        <h2 class="secao-titulo">Cadastrar livro</h2>
+      <span class="acao-recolhivel-icone">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 5v14"></path>
+          <path d="M5 12h14"></path>
+        </svg>
+      </span>
 
-        <p class="secao-subtitulo">
-          Informe os dados do livro para adicioná-lo ao acervo.
-        </p>
-      </div>
+      <span class="acao-recolhivel-textos">
+        <span class="acao-recolhivel-titulo"> Cadastrar livro </span>
 
-      <span id="icone-cadastro-livro" class="secao-recolhivel-icone"> ▼ </span>
+        <span class="acao-recolhivel-subtitulo">
+          Informe os dados do livro para adicioná-lo ao acervo
+        </span>
+      </span>
+
+      <span
+        id="icone-cadastro-livro"
+        class="acao-recolhivel-seta"
+        aria-hidden="true"
+      >
+        <svg viewBox="0 0 24 24">
+          <path d="M6 9l6 6 6-6"></path>
+        </svg>
+      </span>
     </button>
 
     <div id="cadastro-livro-conteudo" class="secao-recolhivel-conteudo">
