@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Editar aluno - {{ configuracao.nome_biblioteca }}{% endblock %}
+
+{% block content %}
+
+<div class="pagina-cabecalho">
+    <div>
+        <h1 class="pagina-titulo">Editar aluno</h1>
+        <p class="pagina-subtitulo">
+            Atualize os dados cadastrais do aluno.
+        </p>
+    </div>
+</div>
+
+<div class="cartao">
+    <div class="secao-cabecalho">
+        <div>
+            <h2 class="secao-titulo">Informações do aluno</h2>
+            <p class="secao-subtitulo">
+                Altere os dados necessários e salve as informações.
+            </p>
+        </div>
+    </div>
+
+    <form
+        action="/alunos/editar/{{ aluno.id }}"
+        method="POST"
+        class="formulario"
+    >
+
+        <div class="formulario-grid">
+
+            <div class="campo">
+                <label for="matricula">Matrícula</label>
+
+                <input
+                    type="text"
+                    id="matricula"
+                    name="matricula"
+                    value="{{ aluno.matricula }}"
+                    required
+                >
+            </div>
+
+            <div class="campo">
+                <label for="nome">Nome</label>
+
+                <input
+                    type="text"
+                    id="nome"
+                    name="nome"
+                    value="{{ aluno.nome }}"
+                    required
+                >
+            </div>
+
+            <div class="campo">
+                <label for="turma">Turma</label>
+
+                <input
+                    type="text"
+                    id="turma"
+                    name="turma"
+                    value="{{ aluno.turma }}"
+                    required
+                >
+            </div>
+
+            <div class="campo">
+                <label for="telefone">Telefone</label>
+
+                <input
+                    type="text"
+                    id="telefone"
+                    name="telefone"
+                    value="{{ aluno.telefone or '' }}"
+                >
+            </div>
+
+        </div>
+
+        <div class="detalhes-pagina-acoes">
+
+            <a
+                href="/alunos/detalhes/{{ aluno.id }}"
+                class="botao botao-secundario"
+            >
+                Cancelar
+            </a>
+
+            <button
+                type="submit"
+                class="botao botao-principal"
+            >
+                Salvar alterações
+            </button>
+
+        </div>
+
+    </form>
+</div>
+
+{% endblock %}

@@ -1,434 +1,285 @@
-{% extends "base.html" %}
-
-{% block title %}
-    Detalhes do Aluno - Biblioteca
-{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %} Detalhes do Aluno - Biblioteca {%
+endblock %} {% block content %}
 
 <div class="pagina-detalhes-aluno">
+  <header class="pagina-cabecalho">
+    <div>
+      <div class="pagina-breadcrumb">
+        <span>Biblioteca</span>
+        <span>›</span>
+        <span>Alunos</span>
+        <span>›</span>
+        <span>Detalhes</span>
+      </div>
 
-    <header class="pagina-cabecalho">
+      <h1 class="pagina-titulo">Detalhes do aluno</h1>
 
-        <div>
+      <p class="pagina-subtitulo">
+        Informações do aluno e livros atualmente em posse.
+      </p>
+    </div>
+  </header>
 
-            <div class="pagina-breadcrumb">
-                <span>Biblioteca</span>
-                <span>›</span>
-                <span>Alunos</span>
-                <span>›</span>
-                <span>Detalhes</span>
-            </div>
-
-            <h1 class="pagina-titulo">
-                Detalhes do aluno
-            </h1>
-
-            <p class="pagina-subtitulo">
-                Informações do aluno e livros atualmente em posse.
-            </p>
-
-        </div>
-
-    </header>
-
-
-    <!-- =====================================================
+  <!-- =====================================================
          INFORMAÇÕES DO ALUNO
     ====================================================== -->
 
-    <section class="secao">
+  <section class="secao">
+    <div class="secao-cabecalho">
+      <div>
+        <h2 class="secao-titulo">Informações do aluno</h2>
 
-        <div class="secao-cabecalho">
+        <p class="secao-subtitulo">Dados cadastrais do aluno.</p>
+      </div>
 
-            <div>
+      <div class="secao-acoes">
+        <a
+          href="/alunos/editar/{{ aluno.id }}"
+          class="botao botao-principal botao-acao-texto"
+          title="Editar aluno"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 20h9"></path>
+            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4z"></path>
+          </svg>
 
-                <h2 class="secao-titulo">
-                    Informações do aluno
-                </h2>
+          <span>Editar aluno</span>
+        </a>
+      </div>
+    </div>
 
-                <p class="secao-subtitulo">
-                    Dados cadastrais do aluno.
-                </p>
+    <div class="detalhes-aluno-informacoes">
+      <div class="detalhes-aluno-item">
+        <span class="detalhes-aluno-label"> Matrícula </span>
 
-            </div>
+        <span class="detalhes-aluno-valor destaque">
+          {{ aluno.matricula }}
+        </span>
+      </div>
 
-        </div>
+      <div class="detalhes-aluno-item">
+        <span class="detalhes-aluno-label"> Nome </span>
 
+        <span class="detalhes-aluno-valor"> {{ aluno.nome }} </span>
+      </div>
 
-        <div class="detalhes-aluno-informacoes">
+      <div class="detalhes-aluno-item">
+        <span class="detalhes-aluno-label"> Turma </span>
 
-            <div class="detalhes-aluno-item">
+        <span class="detalhes-aluno-valor"> {{ aluno.turma }} </span>
+      </div>
 
-                <span class="detalhes-aluno-label">
-                    Matrícula
-                </span>
+      <div class="detalhes-aluno-item">
+        <span class="detalhes-aluno-label"> Telefone </span>
 
-                <span class="detalhes-aluno-valor destaque">
-                    {{ aluno.matricula }}
-                </span>
+        <span class="detalhes-aluno-valor">
+          {% if aluno.telefone %} {{ aluno.telefone }} {% else %}
+          <span class="texto-suave">—</span>
+          {% endif %}
+        </span>
+      </div>
+    </div>
+  </section>
 
-            </div>
-
-
-            <div class="detalhes-aluno-item">
-
-                <span class="detalhes-aluno-label">
-                    Nome
-                </span>
-
-                <span class="detalhes-aluno-valor">
-                    {{ aluno.nome }}
-                </span>
-
-            </div>
-
-
-            <div class="detalhes-aluno-item">
-
-                <span class="detalhes-aluno-label">
-                    Turma
-                </span>
-
-                <span class="detalhes-aluno-valor">
-                    {{ aluno.turma }}
-                </span>
-
-            </div>
-
-
-            <div class="detalhes-aluno-item">
-
-                <span class="detalhes-aluno-label">
-                    Telefone
-                </span>
-
-                <span class="detalhes-aluno-valor">
-
-                    {% if aluno.telefone %}
-                        {{ aluno.telefone }}
-                    {% else %}
-                        <span class="texto-suave">—</span>
-                    {% endif %}
-
-                </span>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- =====================================================
+  <!-- =====================================================
          LIVROS EM POSSE
     ====================================================== -->
 
-    <section class="secao">
+  <section class="secao">
+    <div class="secao-cabecalho">
+      <div>
+        <h2 class="secao-titulo">Livros em posse</h2>
 
-        <div class="secao-cabecalho">
+        <p class="secao-subtitulo">
+          Empréstimos que ainda não foram devolvidos.
+        </p>
+      </div>
 
+      <span class="lista-contador">
+        {{ emprestimos|length }} {% if emprestimos|length == 1 %} livro {% else
+        %} livros {% endif %}
+      </span>
+    </div>
+
+    {% if emprestimos %}
+
+    <div class="emprestimos-aluno-lista">
+      {% for emprestimo in emprestimos %}
+
+      <article class="emprestimo-aluno-card">
+        <div class="emprestimo-aluno-conteudo">
+          <div class="emprestimo-aluno-cabecalho">
             <div>
+              <h3 class="emprestimo-aluno-titulo">
+                {{ emprestimo.livro.titulo }}
+              </h3>
 
-                <h2 class="secao-titulo">
-                    Livros em posse
-                </h2>
-
-                <p class="secao-subtitulo">
-                    Empréstimos que ainda não foram devolvidos.
-                </p>
-
+              <p class="emprestimo-aluno-autor">{{ emprestimo.livro.autor }}</p>
             </div>
 
+            {% if emprestimo.status == "atrasado" %}
 
-            <span class="lista-contador">
+            <span class="status status-atrasado"> Atrasado </span>
 
-                {{ emprestimos|length }}
+            {% else %}
 
-                {% if emprestimos|length == 1 %}
-                    livro
-                {% else %}
-                    livros
-                {% endif %}
+            <span class="status status-emprestado"> Emprestado </span>
 
-            </span>
+            {% endif %}
+          </div>
 
+          <div class="emprestimo-aluno-dados">
+            <div class="emprestimo-aluno-dado">
+              <span class="emprestimo-aluno-dado-label"> ISBN </span>
+
+              <span class="emprestimo-aluno-dado-valor">
+                {% if emprestimo.livro.isbn %} {{ emprestimo.livro.isbn }} {%
+                else %} — {% endif %}
+              </span>
+            </div>
+
+            <div class="emprestimo-aluno-dado">
+              <span class="emprestimo-aluno-dado-label"> Editora </span>
+
+              <span class="emprestimo-aluno-dado-valor">
+                {% if emprestimo.livro.editora %} {{ emprestimo.livro.editora }}
+                {% else %} — {% endif %}
+              </span>
+            </div>
+
+            <div class="emprestimo-aluno-dado">
+              <span class="emprestimo-aluno-dado-label"> Categoria </span>
+
+              <span class="emprestimo-aluno-dado-valor">
+                {% if emprestimo.livro.categoria %} {{
+                emprestimo.livro.categoria }} {% else %} — {% endif %}
+              </span>
+            </div>
+
+            <div class="emprestimo-aluno-dado">
+              <span class="emprestimo-aluno-dado-label"> Localização </span>
+
+              <span class="emprestimo-aluno-dado-valor">
+                {% if emprestimo.livro.localizacao %} {{
+                emprestimo.livro.localizacao }} {% else %} — {% endif %}
+              </span>
+            </div>
+
+            <div class="emprestimo-aluno-dado">
+              <span class="emprestimo-aluno-dado-label">
+                Data do empréstimo
+              </span>
+
+              <span class="emprestimo-aluno-dado-valor">
+                {{ emprestimo.data_emprestimo.strftime('%d/%m/%Y') }}
+              </span>
+            </div>
+
+            <div class="emprestimo-aluno-dado">
+              <span class="emprestimo-aluno-dado-label">
+                Devolução prevista
+              </span>
+
+              <span class="emprestimo-aluno-dado-valor">
+                {{ emprestimo.data_devolucao_prevista.strftime('%d/%m/%Y') }}
+              </span>
+            </div>
+          </div>
         </div>
 
-
-        {% if emprestimos %}
-
-        <div class="emprestimos-aluno-lista">
-
-            {% for emprestimo in emprestimos %}
-
-            <article class="emprestimo-aluno-card">
-
-                <div class="emprestimo-aluno-conteudo">
-
-                    <div class="emprestimo-aluno-cabecalho">
-
-                        <div>
-
-                            <h3 class="emprestimo-aluno-titulo">
-                                {{ emprestimo.livro.titulo }}
-                            </h3>
-
-                            <p class="emprestimo-aluno-autor">
-                                {{ emprestimo.livro.autor }}
-                            </p>
-
-                        </div>
-
-
-                        {% if emprestimo.status == "atrasado" %}
-
-                        <span class="status status-atrasado">
-                            Atrasado
-                        </span>
-
-                        {% else %}
-
-                        <span class="status status-emprestado">
-                            Emprestado
-                        </span>
-
-                        {% endif %}
-
-                    </div>
-
-
-                    <div class="emprestimo-aluno-dados">
-
-                        <div class="emprestimo-aluno-dado">
-
-                            <span class="emprestimo-aluno-dado-label">
-                                ISBN
-                            </span>
-
-                            <span class="emprestimo-aluno-dado-valor">
-
-                                {% if emprestimo.livro.isbn %}
-                                    {{ emprestimo.livro.isbn }}
-                                {% else %}
-                                    —
-                                {% endif %}
-
-                            </span>
-
-                        </div>
-
-
-                        <div class="emprestimo-aluno-dado">
-
-                            <span class="emprestimo-aluno-dado-label">
-                                Editora
-                            </span>
-
-                            <span class="emprestimo-aluno-dado-valor">
-
-                                {% if emprestimo.livro.editora %}
-                                    {{ emprestimo.livro.editora }}
-                                {% else %}
-                                    —
-                                {% endif %}
-
-                            </span>
-
-                        </div>
-
-
-                        <div class="emprestimo-aluno-dado">
-
-                            <span class="emprestimo-aluno-dado-label">
-                                Categoria
-                            </span>
-
-                            <span class="emprestimo-aluno-dado-valor">
-
-                                {% if emprestimo.livro.categoria %}
-                                    {{ emprestimo.livro.categoria }}
-                                {% else %}
-                                    —
-                                {% endif %}
-
-                            </span>
-
-                        </div>
-
-
-                        <div class="emprestimo-aluno-dado">
-
-                            <span class="emprestimo-aluno-dado-label">
-                                Localização
-                            </span>
-
-                            <span class="emprestimo-aluno-dado-valor">
-
-                                {% if emprestimo.livro.localizacao %}
-                                    {{ emprestimo.livro.localizacao }}
-                                {% else %}
-                                    —
-                                {% endif %}
-
-                            </span>
-
-                        </div>
-
-
-                        <div class="emprestimo-aluno-dado">
-
-                            <span class="emprestimo-aluno-dado-label">
-                                Data do empréstimo
-                            </span>
-
-                            <span class="emprestimo-aluno-dado-valor">
-                                {{ emprestimo.data_emprestimo.strftime('%d/%m/%Y') }}
-                            </span>
-
-                        </div>
-
-
-                        <div class="emprestimo-aluno-dado">
-
-                            <span class="emprestimo-aluno-dado-label">
-                                Devolução prevista
-                            </span>
-
-                            <span class="emprestimo-aluno-dado-valor">
-                                {{ emprestimo.data_devolucao_prevista.strftime('%d/%m/%Y') }}
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- =====================================================
+        <!-- =====================================================
                      AÇÕES
                 ====================================================== -->
 
-                <div class="emprestimo-aluno-acoes">
+        <div class="emprestimo-aluno-acoes">
+          <form
+            action="/emprestimos/devolver/{{ emprestimo.id }}"
+            method="POST"
+            class="tabela-formulario"
+            onsubmit="confirmarDevolucao(event, this)"
+          >
+            <button
+              type="submit"
+              class="botao botao-sucesso botao-acao-texto"
+              title="Registrar devolução"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M3 12h14"></path>
+                <path d="M13 7l5 5-5 5"></path>
+                <path d="M21 5v14"></path>
+              </svg>
 
-                    <form
-                        action="/emprestimos/devolver/{{ emprestimo.id }}"
-                        method="POST"
-                        class="tabela-formulario"
-                        onsubmit="confirmarDevolucao(event, this)"
-                    >
+              <span>Registrar devolução</span>
+            </button>
+          </form>
 
-                        <button
-                            type="submit"
-                            class="botao botao-sucesso botao-acao-texto"
-                            title="Registrar devolução"
-                        >
+          <a
+            href="/emprestimos/pdf/{{ emprestimo.id }}"
+            target="_blank"
+            class="botao botao-secundario botao-acao-texto"
+            title="Abrir comprovante"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 2h9l3 3v17H6z"></path>
+              <path d="M14 2v4h4"></path>
+              <path d="M9 13h6"></path>
+              <path d="M9 17h6"></path>
+              <path d="M9 9h2"></path>
+            </svg>
 
-                            <svg
-                                viewBox="0 0 24 24"
-                                aria-hidden="true"
-                            >
-                                <path d="M3 12h14"></path>
-                                <path d="M13 7l5 5-5 5"></path>
-                                <path d="M21 5v14"></path>
-                            </svg>
-
-                            <span>Registrar devolução</span>
-
-                        </button>
-
-                    </form>
-
-
-                    <a
-                        href="/emprestimos/pdf/{{ emprestimo.id }}"
-                        target="_blank"
-                        class="botao botao-secundario botao-acao-texto"
-                        title="Abrir comprovante"
-                    >
-
-                        <svg
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                        >
-                            <path d="M6 2h9l3 3v17H6z"></path>
-                            <path d="M14 2v4h4"></path>
-                            <path d="M9 13h6"></path>
-                            <path d="M9 17h6"></path>
-                            <path d="M9 9h2"></path>
-                        </svg>
-
-                        <span>Abrir comprovante</span>
-
-                    </a>
-
-                </div>
-
-            </article>
-
-            {% endfor %}
-
+            <span>Abrir comprovante</span>
+          </a>
         </div>
+      </article>
 
-        {% else %}
+      {% endfor %}
+    </div>
 
-        <div class="estado-vazio">
+    {% else %}
 
-            <div class="estado-vazio-icone">
-                📚
-            </div>
+    <div class="estado-vazio">
+      <div class="estado-vazio-icone">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"
+          ></path>
+          <path d="M4 5.5v16"></path>
+          <path d="M8 7h8"></path>
+          <path d="M8 11h8"></path>
+        </svg>
+      </div>
 
-            <h3 class="estado-vazio-titulo">
-                Nenhum livro em posse
-            </h3>
+      <h3 class="estado-vazio-titulo">Nenhum livro em posse</h3>
 
-            <p class="estado-vazio-descricao">
-                Este aluno não possui empréstimos ativos no momento.
-            </p>
+      <p class="estado-vazio-descricao">
+        Este aluno não possui empréstimos ativos no momento.
+      </p>
+    </div>
 
-        </div>
+    {% endif %}
+  </section>
 
-        {% endif %}
-
-    </section>
-
-
-    <!-- =====================================================
+  <!-- =====================================================
          VOLTAR
     ====================================================== -->
 
-    <div class="detalhes-pagina-acoes">
-
-        <a
-            href="/alunos"
-            class="botao botao-secundario"
-        >
-            Voltar para alunos
-        </a>
-
-    </div>
-
+  <div class="detalhes-pagina-acoes">
+    <a href="/alunos" class="botao botao-secundario"> Voltar para alunos </a>
+  </div>
 </div>
 
-
 <script>
-
-function confirmarDevolucao(evento, formulario) {
-
+  function confirmarDevolucao(evento, formulario) {
     evento.preventDefault();
 
     mostrarConfirmacao(
-        "Confirmar devolução",
-        "Deseja realmente registrar a devolução deste livro?",
-        function () {
-            formulario.submit();
-        }
+      "Confirmar devolução",
+      "Deseja realmente registrar a devolução deste livro?",
+      function () {
+        formulario.submit();
+      },
     );
-
-}
-
+  }
 </script>
 
 {% endblock %}
-

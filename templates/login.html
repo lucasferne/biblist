@@ -1,224 +1,135 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
 
-<head>
-
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Login - Biblioteca</title>
 
     <link
-        rel="stylesheet"
-        href="{{ url_for('static', filename='css/style.css') }}"
-    >
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
 
-    <script
-        src="{{ url_for('static', filename='js/lucide.js') }}"
-    ></script>
+    <style>
+      :root {
+          --cor-principal: {{ configuracao.cor_principal }};
+      }
+    </style>
 
-</head>
+    <script src="{{ url_for('static', filename='js/lucide.js') }}"></script>
+  </head>
 
-
-<body class="pagina-login">
-
+  <body class="pagina-login">
     <main class="login-pagina">
-
-        <div class="login-container">
-
-            <section class="login-card">
-
-
-                <!-- =================================================
+      <div class="login-container">
+        <section class="login-card">
+          <!-- =================================================
                      CABEÇALHO
                 ================================================== -->
 
-                <header class="login-cabecalho">
+          <header class="login-cabecalho">
+            <div class="login-logo">
+              {% if configuracao and configuracao.logo %}
 
-                    <div class="login-logo">
+              <img
+                src="{{ url_for('servir_upload', nome=configuracao.logo) }}?v=1"
+                alt="Logo da biblioteca"
+              />
 
-                        {% if configuracao and configuracao.logo %}
+              {% else %}
 
-                            <img
-                                src="{{ url_for('static', filename='uploads/' + configuracao.logo) }}"
-                                alt="Logo da biblioteca"
-                            >
+              <i data-lucide="library-big"></i>
 
-                        {% else %}
+              {% endif %}
+            </div>
 
-                            <i data-lucide="library-big"></i>
+            <h1 class="login-titulo">Biblioteca</h1>
 
-                        {% endif %}
+            <p class="login-subtitulo">
+              Sistema de gerenciamento da biblioteca
+            </p>
+          </header>
 
-                    </div>
-
-
-                    <h1 class="login-titulo">
-                        Biblioteca
-                    </h1>
-
-
-                    <p class="login-subtitulo">
-                        Sistema de gerenciamento da biblioteca
-                    </p>
-
-                </header>
-
-
-                <!-- =================================================
+          <!-- =================================================
                      FORMULÁRIO
                 ================================================== -->
 
-                <div class="login-formulario">
+          <div class="login-formulario">
+            {% with mensagens = get_flashed_messages(with_categories=true) %} {%
+            for categoria, mensagem in mensagens %} {% if mensagem != "Faça
+            login para acessar esta página." %}
 
+            <div
+              class="login-alerta {% if categoria == 'error' or categoria == 'erro' %} login-alerta-erro {% else %} login-alerta-sucesso {% endif %}"
+            >
+              {{ mensagem }}
+            </div>
 
-                {% with mensagens = get_flashed_messages(with_categories=true) %}
+            {% endif %} {% endfor %} {% endwith %} {% if erro %}
 
-                    {% for categoria, mensagem in mensagens %}
+            <div class="login-alerta login-alerta-erro">{{ erro }}</div>
 
-                        {% if mensagem != "Faça login para acessar esta página." %}
+            {% endif %}
 
-                            <div
-                                class="
-                                    login-alerta
-                                    {% if categoria == 'error' or categoria == 'erro' %}
-                                        login-alerta-erro
-                                    {% else %}
-                                        login-alerta-sucesso
-                                    {% endif %}
-                                "
-                            >
+            <form method="POST" action="{{ url_for('login') }}">
+              <!-- E-MAIL -->
 
-                                {{ mensagem }}
+              <div class="login-campo">
+                <label for="email" class="login-label"> E-mail </label>
 
-                            </div>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  class="login-input"
+                  placeholder="Digite seu e-mail"
+                  autocomplete="email"
+                  required
+                  autofocus
+                />
+              </div>
 
-                        {% endif %}
+              <!-- SENHA -->
 
-                    {% endfor %}
+              <div class="login-campo">
+                <label for="senha" class="login-label"> Senha </label>
 
-                {% endwith %}
+                <input
+                  id="senha"
+                  name="senha"
+                  type="password"
+                  class="login-input"
+                  placeholder="Digite sua senha"
+                  autocomplete="current-password"
+                  required
+                />
+              </div>
 
+              <!-- BOTÃO -->
 
-                {% if erro %}
+              <button type="submit" class="login-botao">Entrar</button>
+            </form>
+          </div>
 
-                    <div class="login-alerta login-alerta-erro">
-                        {{ erro }}
-                    </div>
-
-                {% endif %}
-
-
-                    <form
-                        method="POST"
-                        action="{{ url_for('login') }}"
-                    >
-
-
-                        <!-- E-MAIL -->
-
-                        <div class="login-campo">
-
-                            <label
-                                for="email"
-                                class="login-label"
-                            >
-                                E-mail
-                            </label>
-
-
-                            <input
-                                id="email"
-                                name="email"
-                                type="email"
-                                class="login-input"
-                                placeholder="Digite seu e-mail"
-                                autocomplete="email"
-                                required
-                                autofocus
-                            >
-
-                        </div>
-
-
-                        <!-- SENHA -->
-
-                        <div class="login-campo">
-
-                            <label
-                                for="senha"
-                                class="login-label"
-                            >
-                                Senha
-                            </label>
-
-
-                            <input
-                                id="senha"
-                                name="senha"
-                                type="password"
-                                class="login-input"
-                                placeholder="Digite sua senha"
-                                autocomplete="current-password"
-                                required
-                            >
-
-                        </div>
-
-
-                        <!-- BOTÃO -->
-
-                        <button
-                            type="submit"
-                            class="login-botao"
-                        >
-                            Entrar
-                        </button>
-
-                    </form>
-
-                </div>
-
-
-                <!-- =================================================
+          <!-- =================================================
                      RODAPÉ
                 ================================================== -->
 
-                <footer class="login-rodape">
-
-                    Sistema de gerenciamento de biblioteca
-
-                </footer>
-
-
-            </section>
-
-        </div>
-
+          <footer class="login-rodape">
+            Sistema de gerenciamento de biblioteca
+          </footer>
+        </section>
+      </div>
     </main>
 
-
     <script>
-
-        document.addEventListener(
-            "DOMContentLoaded",
-            function () {
-
-                if (typeof lucide !== "undefined") {
-
-                    lucide.createIcons();
-
-                }
-
-            }
-        );
-
+      document.addEventListener("DOMContentLoaded", function () {
+        if (typeof lucide !== "undefined") {
+          lucide.createIcons();
+        }
+      });
     </script>
-
-</body>
-
+  </body>
 </html>

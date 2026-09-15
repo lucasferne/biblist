@@ -1,680 +1,461 @@
 <!doctype html>
 
 <html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
 
-<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <meta charset="UTF-8" />
+    <title>Comprovante de Empréstimo</title>
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
+    <script src="{{ url_for('static', filename='js/lucide.js') }}"></script>
 
-  <title>Comprovante de Empréstimo</title>
+    <style>
+      @page {
+        size: A4;
+        margin: 18mm;
+      }
 
-  <script
-    src="{{ url_for('static', filename='js/lucide.js') }}"
-  ></script>
-
-  <style>
-
-    @page {
-      size: A4;
-      margin: 18mm;
-    }
-
-
-    * {
-      box-sizing: border-box;
-    }
-
-
-    body {
-      font-family: Arial, sans-serif;
-      font-size: 11pt;
-      line-height: 1.5;
-      margin: 0;
-      color: #222831;
-      background: #ffffff;
-    }
-
-
-    .documento {
-      max-width: 174mm;
-      margin: 0 auto;
-    }
-
-
-    /* =====================================================
-       CABEÇALHO
-       ===================================================== */
-
-    .cabecalho {
-      padding-bottom: 18px;
-      border-bottom: 2px solid #2f3e46;
-      text-align: center;
-    }
-
-
-    .cabecalho-logo {
-      width: 64px;
-      height: 64px;
-      margin: 0 auto 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-
-    .cabecalho-logo img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-    }
-
-
-    .cabecalho-logo svg {
-      width: 48px;
-      height: 48px;
-      stroke-width: 1.8;
-    }
-
-
-    .cabecalho h1 {
-      margin: 0;
-      font-size: 21pt;
-      letter-spacing: 0.3px;
-    }
-
-
-    .cabecalho p {
-      margin: 5px 0 0;
-      color: #68717a;
-      font-size: 10pt;
-    }
-
-
-    .identificacao {
-      margin-top: 14px;
-      text-align: right;
-      color: #68717a;
-      font-size: 9.5pt;
-    }
-
-
-    .identificacao strong {
-      color: #222831;
-    }
-
-
-    /* =====================================================
-       SEÇÕES
-       ===================================================== */
-
-    .secao {
-      margin-top: 25px;
-    }
-
-
-    .secao h2 {
-      margin: 0 0 12px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid #e1e5e8;
-      color: #2f3e46;
-      font-size: 13pt;
-    }
-
-
-    /* =====================================================
-       INFORMAÇÕES
-       ===================================================== */
-
-    .informacao {
-      display: flex;
-      margin: 7px 0;
-    }
-
-
-    .informacao strong {
-      flex: 0 0 175px;
-    }
-
-
-    .informacao span {
-      flex: 1;
-    }
-
-
-    /* =====================================================
-       SITUAÇÃO
-       ===================================================== */
-
-    .situacao {
-      margin-top: 28px;
-      padding: 14px;
-      border: 1px solid #e1e5e8;
-      border-radius: 6px;
-      background: #f7f8f9;
-      text-align: center;
-      font-size: 13pt;
-    }
-
-
-    .situacao strong {
-      margin-right: 6px;
-    }
-
-
-    .situacao-emprestado {
-      color: #ef6c00;
-    }
-
-
-    .situacao-devolvido {
-      color: #2e7d32;
-    }
-
-
-    .situacao-atrasado {
-      color: #c62828;
-    }
-
-
-    /* =====================================================
-       RODAPÉ
-       ===================================================== */
-
-    .rodape {
-      margin-top: 35px;
-      padding-top: 10px;
-      border-top: 1px solid #e1e5e8;
-      text-align: center;
-      color: #68717a;
-      font-size: 8.5pt;
-    }
-
-
-    /* =====================================================
-       AÇÕES
-       ===================================================== */
-
-    .acoes {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 25px;
-    }
-
-
-    .acoes button {
-      min-width: 130px;
-      padding: 9px 18px;
-      border: 1px solid #2f3e46;
-      border-radius: 6px;
-      background: #2f3e46;
-      color: #ffffff;
-      font-size: 10pt;
-      cursor: pointer;
-    }
-
-
-    .acoes button:hover {
-      background: #253238;
-    }
-
-
-    .acoes button:last-child {
-      background: #ffffff;
-      color: #2f3e46;
-    }
-
-
-    .acoes button:last-child:hover {
-      background: #f5f6f8;
-    }
-
-
-    /* =====================================================
-       IMPRESSÃO
-       ===================================================== */
-
-    @media print {
-
-      .acoes {
-        display: none;
+      * {
+        box-sizing: border-box;
       }
 
       body {
-        font-size: 10.5pt;
-      }
-
-      .cabecalho {
-        border-bottom-color: #000;
-      }
-
-      .secao h2 {
-        color: #000;
-      }
-
-      .situacao {
-        break-inside: avoid;
-      }
-
-    }
-
-
-    /* =====================================================
-       TELAS MENORES
-       ===================================================== */
-
-    @media screen and (max-width: 600px) {
-
-      body {
-        padding: 15px;
+        font-family: Arial, sans-serif;
+        font-size: 11pt;
+        line-height: 1.5;
+        margin: 0;
+        color: #222831;
+        background: #ffffff;
       }
 
       .documento {
-        max-width: none;
+        max-width: 174mm;
+        margin: 0 auto;
       }
 
+      /* =====================================================
+       CABEÇALHO
+       ===================================================== */
+
+      .cabecalho {
+        padding-bottom: 18px;
+        border-bottom: 2px solid #2f3e46;
+        text-align: center;
+      }
+
+      .cabecalho-logo {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .cabecalho-logo img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+      }
+
+      .cabecalho-logo svg {
+        width: 48px;
+        height: 48px;
+        stroke-width: 1.8;
+      }
+
+      .cabecalho h1 {
+        margin: 0;
+        font-size: 21pt;
+        letter-spacing: 0.3px;
+      }
+
+      .cabecalho p {
+        margin: 5px 0 0;
+        color: #68717a;
+        font-size: 10pt;
+      }
+
+      .identificacao {
+        margin-top: 14px;
+        text-align: right;
+        color: #68717a;
+        font-size: 9.5pt;
+      }
+
+      .identificacao strong {
+        color: #222831;
+      }
+
+      /* =====================================================
+       SEÇÕES
+       ===================================================== */
+
+      .secao {
+        margin-top: 25px;
+      }
+
+      .secao h2 {
+        margin: 0 0 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid #e1e5e8;
+        color: #2f3e46;
+        font-size: 13pt;
+      }
+
+      /* =====================================================
+       INFORMAÇÕES
+       ===================================================== */
+
       .informacao {
-        display: block;
+        display: flex;
+        margin: 7px 0;
       }
 
       .informacao strong {
-        display: block;
-        margin-bottom: 2px;
+        flex: 0 0 175px;
       }
 
+      .informacao span {
+        flex: 1;
+      }
+
+      /* =====================================================
+       SITUAÇÃO
+       ===================================================== */
+
+      .situacao {
+        margin-top: 28px;
+        padding: 14px;
+        border: 1px solid #e1e5e8;
+        border-radius: 6px;
+        background: #f7f8f9;
+        text-align: center;
+        font-size: 13pt;
+      }
+
+      .situacao strong {
+        margin-right: 6px;
+      }
+
+      .situacao-emprestado {
+        color: #ef6c00;
+      }
+
+      .situacao-devolvido {
+        color: #2e7d32;
+      }
+
+      .situacao-atrasado {
+        color: #c62828;
+      }
+
+      /* =====================================================
+       RODAPÉ
+       ===================================================== */
+
+      .rodape {
+        margin-top: 35px;
+        padding-top: 10px;
+        border-top: 1px solid #e1e5e8;
+        text-align: center;
+        color: #68717a;
+        font-size: 8.5pt;
+      }
+
+      /* =====================================================
+       AÇÕES
+       ===================================================== */
+
       .acoes {
-        flex-direction: column;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 25px;
       }
 
       .acoes button {
-        width: 100%;
+        min-width: 130px;
+        padding: 9px 18px;
+        border: 1px solid #2f3e46;
+        border-radius: 6px;
+        background: #2f3e46;
+        color: #ffffff;
+        font-size: 10pt;
+        cursor: pointer;
       }
 
-    }
+      .acoes button:hover {
+        background: #253238;
+      }
 
-  </style>
+      .acoes button:last-child {
+        background: #ffffff;
+        color: #2f3e46;
+      }
 
-</head>
+      .acoes button:last-child:hover {
+        background: #f5f6f8;
+      }
 
+      /* =====================================================
+       IMPRESSÃO
+       ===================================================== */
 
-<body>
+      @media print {
+        .acoes {
+          display: none;
+        }
 
-  <div class="documento">
+        body {
+          font-size: 10.5pt;
+        }
 
+        .cabecalho {
+          border-bottom-color: #000;
+        }
 
-    <!-- =====================================================
+        .secao h2 {
+          color: #000;
+        }
+
+        .situacao {
+          break-inside: avoid;
+        }
+      }
+
+      /* =====================================================
+       TELAS MENORES
+       ===================================================== */
+
+      @media screen and (max-width: 600px) {
+        body {
+          padding: 15px;
+        }
+
+        .documento {
+          max-width: none;
+        }
+
+        .informacao {
+          display: block;
+        }
+
+        .informacao strong {
+          display: block;
+          margin-bottom: 2px;
+        }
+
+        .acoes {
+          flex-direction: column;
+        }
+
+        .acoes button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="documento">
+      <!-- =====================================================
          CABEÇALHO
          ===================================================== -->
 
-    <header class="cabecalho">
-
-      <div class="cabecalho-logo">
-
-        {% if configuracao.logo %}
+      <header class="cabecalho">
+        <div class="cabecalho-logo">
+          {% if configuracao.logo %}
 
           <img
-            src="{{ url_for('static', filename='uploads/' + configuracao.logo) }}"
+            src="{{ url_for('servir_upload', nome=configuracao.logo) }}?v=1"
             alt="Logo da biblioteca"
-          >
-
-        {% else %}
-
-          <i data-lucide="library-big"></i>
-
-        {% endif %}
-
-      </div>
-
-
-      <h1>
-        COMPROVANTE DE EMPRÉSTIMO
-      </h1>
-
-
-      <p>
-        {{ configuracao.nome_biblioteca }}
-      </p>
-
-    </header>
-
-
-    <div class="identificacao">
-
-      <strong>Empréstimo nº:</strong>
-      {{ emprestimo.id }}
-
-    </div>
-
-
-    <!-- =====================================================
-         ALUNO
-         ===================================================== -->
-
-    <section class="secao">
-
-      <h2>
-        Aluno
-      </h2>
-
-
-      <p class="informacao">
-
-        <strong>
-          Matrícula:
-        </strong>
-
-        <span>
-          {{ emprestimo.aluno.matricula }}
-        </span>
-
-      </p>
-
-
-      <p class="informacao">
-
-        <strong>
-          Nome:
-        </strong>
-
-        <span>
-          {{ emprestimo.aluno.nome }}
-        </span>
-
-      </p>
-
-
-      <p class="informacao">
-
-        <strong>
-          Turma:
-        </strong>
-
-        <span>
-          {{ emprestimo.aluno.turma }}
-        </span>
-
-      </p>
-
-
-      <p class="informacao">
-
-        <strong>
-          Telefone:
-        </strong>
-
-        <span>
-          {{ emprestimo.aluno.telefone or "-" }}
-        </span>
-
-      </p>
-
-    </section>
-
-
-    <!-- =====================================================
-         LIVRO
-         ===================================================== -->
-
-    <section class="secao">
-
-      <h2>
-        Livro
-      </h2>
-
-
-      <p class="informacao">
-
-        <strong>
-          Título:
-        </strong>
-
-        <span>
-          {{ emprestimo.livro.titulo }}
-        </span>
-
-      </p>
-
-
-      <p class="informacao">
-
-        <strong>
-          Autor:
-        </strong>
-
-        <span>
-          {{ emprestimo.livro.autor }}
-        </span>
-
-      </p>
-
-
-      <p class="informacao">
-
-        <strong>
-          ISBN:
-        </strong>
-
-        <span>
-          {{ emprestimo.livro.isbn or "-" }}
-        </span>
-
-      </p>
-
-
-      <p class="informacao">
-
-        <strong>
-          Editora:
-        </strong>
-
-        <span>
-          {{ emprestimo.livro.editora or "-" }}
-        </span>
-
-      </p>
-
-
-      <p class="informacao">
-
-        <strong>
-          Ano de publicação:
-        </strong>
-
-        <span>
-          {{ emprestimo.livro.ano or "-" }}
-        </span>
-
-      </p>
-
-
-      <p class="informacao">
-
-        <strong>
-          Categoria:
-        </strong>
-
-        <span>
-          {{ emprestimo.livro.categoria or "-" }}
-        </span>
-
-      </p>
-
-
-      <p class="informacao">
-
-        <strong>
-          Localização:
-        </strong>
-
-        <span>
-          {{ emprestimo.livro.localizacao or "-" }}
-        </span>
-
-      </p>
-
-    </section>
-
-
-    <!-- =====================================================
-         DATAS
-         ===================================================== -->
-
-    <section class="secao">
-
-      <h2>
-        Datas
-      </h2>
-
-
-      <p class="informacao">
-
-        <strong>
-          Data do empréstimo:
-        </strong>
-
-        <span>
-          {{ emprestimo.data_emprestimo.strftime('%d/%m/%Y') }}
-        </span>
-
-      </p>
-
-
-      <p class="informacao">
-
-        <strong>
-          Devolução prevista:
-        </strong>
-
-        <span>
-          {{ emprestimo.data_devolucao_prevista.strftime('%d/%m/%Y') }}
-        </span>
-
-      </p>
-
-
-      <p class="informacao">
-
-        <strong>
-          Data da devolução:
-        </strong>
-
-        <span>
-
-          {% if emprestimo.data_devolucao %}
-
-            {{ emprestimo.data_devolucao.strftime('%d/%m/%Y') }}
+          />
 
           {% else %}
 
-            Ainda não devolvido
+          <i data-lucide="library-big"></i>
 
           {% endif %}
+        </div>
 
-        </span>
+        <h1>COMPROVANTE DE EMPRÉSTIMO</h1>
 
-      </p>
+        <p>{{ configuracao.nome_biblioteca }}</p>
+      </header>
 
-    </section>
+      <div class="identificacao">
+        <strong>Empréstimo nº:</strong>
+        {{ emprestimo.id }}
+      </div>
 
+      <!-- =====================================================
+         ALUNO
+         ===================================================== -->
 
-    <!-- =====================================================
+      <section class="secao">
+        <h2>Aluno</h2>
+
+        <p class="informacao">
+          <strong> Matrícula: </strong>
+
+          <span> {{ emprestimo.aluno.matricula }} </span>
+        </p>
+
+        <p class="informacao">
+          <strong> Nome: </strong>
+
+          <span> {{ emprestimo.aluno.nome }} </span>
+        </p>
+
+        <p class="informacao">
+          <strong> Turma: </strong>
+
+          <span> {{ emprestimo.aluno.turma }} </span>
+        </p>
+
+        <p class="informacao">
+          <strong> Telefone: </strong>
+
+          <span> {{ emprestimo.aluno.telefone or "-" }} </span>
+        </p>
+      </section>
+
+      <!-- =====================================================
+         LIVRO
+         ===================================================== -->
+
+      <section class="secao">
+        <h2>Livro</h2>
+
+        <p class="informacao">
+          <strong> Título: </strong>
+
+          <span> {{ emprestimo.livro.titulo }} </span>
+        </p>
+
+        <p class="informacao">
+          <strong> Autor: </strong>
+
+          <span> {{ emprestimo.livro.autor }} </span>
+        </p>
+
+        <p class="informacao">
+          <strong> ISBN: </strong>
+
+          <span> {{ emprestimo.livro.isbn or "-" }} </span>
+        </p>
+
+        <p class="informacao">
+          <strong> Editora: </strong>
+
+          <span> {{ emprestimo.livro.editora or "-" }} </span>
+        </p>
+
+        <p class="informacao">
+          <strong> Ano de publicação: </strong>
+
+          <span> {{ emprestimo.livro.ano or "-" }} </span>
+        </p>
+
+        <p class="informacao">
+          <strong> Categoria: </strong>
+
+          <span> {{ emprestimo.livro.categoria or "-" }} </span>
+        </p>
+
+        <p class="informacao">
+          <strong> Localização: </strong>
+
+          <span> {{ emprestimo.livro.localizacao or "-" }} </span>
+        </p>
+      </section>
+
+      <!-- =====================================================
+         DATAS
+         ===================================================== -->
+
+      <section class="secao">
+        <h2>Datas</h2>
+
+        <p class="informacao">
+          <strong> Data do empréstimo: </strong>
+
+          <span> {{ emprestimo.data_emprestimo.strftime('%d/%m/%Y') }} </span>
+        </p>
+
+        <p class="informacao">
+          <strong> Devolução prevista: </strong>
+
+          <span>
+            {{ emprestimo.data_devolucao_prevista.strftime('%d/%m/%Y') }}
+          </span>
+        </p>
+
+        <p class="informacao">
+          <strong> Data da devolução: </strong>
+
+          <span>
+            {% if emprestimo.data_devolucao %} {{
+            emprestimo.data_devolucao.strftime('%d/%m/%Y') }} {% else %} Ainda
+            não devolvido {% endif %}
+          </span>
+        </p>
+      </section>
+
+      <!-- =====================================================
          SITUAÇÃO
          ===================================================== -->
 
-    <section class="situacao">
+      <section class="situacao">
+        <strong> Situação: </strong>
 
-      <strong>
-        Situação:
-      </strong>
+        {% if emprestimo.status == "emprestado" %}
 
+        <span class="situacao-emprestado"> Emprestado </span>
 
-      {% if emprestimo.status == "emprestado" %}
+        {% elif emprestimo.status == "devolvido" %}
 
-        <span class="situacao-emprestado">
-          Emprestado
-        </span>
+        <span class="situacao-devolvido"> Devolvido </span>
 
-      {% elif emprestimo.status == "devolvido" %}
+        {% elif emprestimo.status == "atrasado" %}
 
-        <span class="situacao-devolvido">
-          Devolvido
-        </span>
+        <span class="situacao-atrasado"> Atrasado </span>
 
-      {% elif emprestimo.status == "atrasado" %}
+        {% else %} {{ emprestimo.status }} {% endif %}
+      </section>
 
-        <span class="situacao-atrasado">
-          Atrasado
-        </span>
-
-      {% else %}
-
-        {{ emprestimo.status }}
-
-      {% endif %}
-
-    </section>
-
-
-    <!-- =====================================================
+      <!-- =====================================================
          RODAPÉ
          ===================================================== -->
 
-    <footer class="rodape">
+      <footer class="rodape">
+        Documento gerado em: {{ data_geracao.strftime('%d/%m/%Y às %H:%M:%S') }}
+      </footer>
 
-      Documento gerado em:
-      {{ data_geracao.strftime('%d/%m/%Y às %H:%M:%S') }}
-
-    </footer>
-
-
-    <!-- =====================================================
+      <!-- =====================================================
          AÇÕES
          ===================================================== -->
 
-    <div class="acoes">
+      <div class="acoes">
+        <button type="button" onclick="window.print()">Salvar como PDF</button>
 
-      <button
-        type="button"
-        onclick="window.print()"
-      >
-        Salvar como PDF
-      </button>
-
-
-      <button
-        type="button"
-        onclick="window.close()"
-      >
-        Fechar
-      </button>
-
+        <button
+          type="button"
+          onclick="window.location.href='/emprestimos/detalhes/{{ emprestimo.id }}'"
+        >
+          Fechar
+        </button>
+      </div>
     </div>
 
-
-  </div>
-
-
-  <script>
-
-    document.addEventListener(
-      "DOMContentLoaded",
-      function () {
-
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
         if (typeof lucide !== "undefined") {
           lucide.createIcons();
         }
-
-      }
-    );
-
-  </script>
-
-
-</body>
-
+      });
+    </script>
+  </body>
 </html>

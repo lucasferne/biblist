@@ -139,8 +139,12 @@
         </div>
 
         <div class="formulario-acoes">
-          <button type="submit" class="botao botao-principal">
-            Registrar empréstimo
+          <button
+            type="submit"
+            class="botao botao-principal"
+            onclick="verificarAlunoAntesDoEmprestimo(event, this.form)"
+          >
+            Registrar novo empréstimo
           </button>
         </div>
       </form>
@@ -493,7 +497,9 @@
     {% else %}
 
     <div class="estado-vazio">
-      <div class="estado-vazio-icone">📚</div>
+      <div class="dashboard-acesso-icone">
+        <i data-lucide="arrow-left-right"></i>
+      </div>
 
       {% if pesquisa %}
 
@@ -718,14 +724,13 @@
               largurasAtuais[i] = largurasIniciaisPx[i];
             }
           } else {
-
-          /*
-           * Arrastando para a ESQUERDA:
-           *
-           * A coluna atual cresce para a esquerda.
-           * As colunas à esquerda cedem espaço,
-           * começando pela mais próxima.
-           */
+            /*
+             * Arrastando para a ESQUERDA:
+             *
+             * A coluna atual cresce para a esquerda.
+             * As colunas à esquerda cedem espaço,
+             * começando pela mais próxima.
+             */
             let espacoDisponivel = 0;
 
             for (let i = indice - 1; i >= 0; i--) {
@@ -890,8 +895,8 @@
   }
 
   /* =====================================================
-   BUSCA DE ALUNO
-===================================================== */
+     BUSCA DE ALUNO
+  ===================================================== */
 
   const matriculaInput = document.getElementById("matricula");
 
@@ -901,10 +906,17 @@
 
   const telefoneInput = document.getElementById("telefone");
 
+  /*
+   * Guarda o ID do aluno que foi encontrado,
+   * mas está inativo.
+   */
+  let alunoInativoId = null;
+
   matriculaInput.addEventListener("blur", async function () {
     const matricula = matriculaInput.value.trim();
 
     if (!matricula) {
+      alunoInativoId = null;
       return;
     }
 
@@ -915,37 +927,168 @@
 
       const aluno = await resposta.json();
 
+      /*
+       * =====================================================
+       * ALUNO ATIVO ENCONTRADO
+       * =====================================================
+       */
+
       if (aluno.encontrado) {
+        alunoInativoId = null;
+
         nomeInput.value = aluno.nome;
-
         turmaInput.value = aluno.turma;
-
-        telefoneInput.value = aluno.telefone;
+        telefoneInput.value = aluno.telefone || "";
 
         nomeInput.readOnly = true;
-
         turmaInput.readOnly = true;
-
         telefoneInput.readOnly = true;
-      } else {
+
+        return;
+      }
+
+      /*
+       * =====================================================
+       * ALUNO INATIVO ENCONTRADO
+       * =====================================================
+       */
+
+      if (aluno.inativo) {
+        /*
+         * Guarda o ID para podermos reativar
+         * depois da confirmação.
+         */
+        alunoInativoId = aluno.id;
+
+        /*
+         * Não preenche os dados do aluno inativo.
+         */
         nomeInput.value = "";
-
         turmaInput.value = "";
-
         telefoneInput.value = "";
 
         nomeInput.readOnly = false;
-
         turmaInput.readOnly = false;
-
         telefoneInput.readOnly = false;
 
-        nomeInput.focus();
+        return;
       }
+
+      /*
+       * =====================================================
+       * ALUNO NÃO CADASTRADO
+       * =====================================================
+       */
+
+      alunoInativoId = null;
+
+      nomeInput.value = "";
+      turmaInput.value = "";
+      telefoneInput.value = "";
+
+      nomeInput.readOnly = false;
+      turmaInput.readOnly = false;
+      telefoneInput.readOnly = false;
+
+      nomeInput.focus();
     } catch (erro) {
       console.error("Erro ao buscar aluno:", erro);
+
+      alunoInativoId = null;
     }
   });
+
+  /* =====================================================
+     VERIFICA ALUNO ANTES DO EMPRÉSTIMO
+  ===================================================== */
+
+  function verificarAlunoAntesDoEmprestimo(evento, formulario) {
+    /*
+     * Se não existe aluno inativo, deixa o formulário
+     * continuar normalmente.
+     */
+    if (!alunoInativoId) {
+      return;
+    }
+
+    /*
+     * Impede o envio do formulário.
+     */
+    evento.preventDefault();
+
+    /*
+     * Abre o modal de confirmação.
+     */
+    mostrarConfirmacao(
+      "Aluno inativo",
+      "Este aluno já foi cadastrado anteriormente, mas está inativo. Deseja reativá-lo?",
+      function () {
+        reativarAluno(alunoInativoId);
+      },
+    );
+  }
+
+  /* =====================================================
+     REATIVA ALUNO
+  ===================================================== */
+
+  async function reativarAluno(id) {
+    try {
+      const resposta = await fetch(`/alunos/reativar/${id}`, {
+        method: "POST",
+      });
+
+      const resultado = await resposta.json();
+
+      /*
+       * Falha na reativação.
+       */
+      if (!resultado.sucesso) {
+        mostrarErro(resultado.mensagem || "Não foi possível reativar o aluno.");
+
+        return;
+      }
+
+      /*
+       * Aluno foi reativado.
+       */
+      alunoInativoId = null;
+
+      /*
+       * Preenche novamente os dados do aluno.
+       */
+      matriculaInput.value = resultado.matricula;
+
+      nomeInput.value = resultado.nome;
+
+      turmaInput.value = resultado.turma;
+
+      telefoneInput.value = resultado.telefone || "";
+
+      /*
+       * Mantém os dados editáveis.
+       *
+       * Assim o usuário pode corrigir ou atualizar
+       * alguma informação antes de registrar o empréstimo.
+       */
+      nomeInput.readOnly = false;
+
+      turmaInput.readOnly = false;
+
+      telefoneInput.readOnly = false;
+
+      /*
+       * Não envia o empréstimo automaticamente.
+       *
+       * O usuário continua na tela e precisa clicar
+       * novamente em "Registrar novo empréstimo".
+       */
+    } catch (erro) {
+      console.error("Erro ao reativar aluno:", erro);
+
+      mostrarErro("Ocorreu um erro ao tentar reativar o aluno.");
+    }
+  }
 
   /* =====================================================
    BUSCA DE LIVRO
@@ -1045,6 +1188,49 @@
         livroPesquisaInput.focus();
       }
     });
+
+  function verificarAlunoAntesDoEmprestimo(evento, formulario) {
+    if (!alunoInativoId) {
+      return;
+    }
+
+    evento.preventDefault();
+
+    mostrarConfirmacao(
+      "Aluno inativo",
+      "Usuário já foi cadastrado antes e inativado. Deseja reativá-lo?",
+      function () {
+        reativarAluno(alunoInativoId);
+      },
+    );
+  }
+
+  async function reativarAluno(id) {
+    try {
+      const resposta = await fetch(`/alunos/reativar/${id}`, {
+        method: "POST",
+      });
+
+      const resultado = await resposta.json();
+
+      if (!resultado.sucesso) {
+        mostrarErro(resultado.mensagem || "Não foi possível reativar o aluno.");
+        return;
+      }
+
+      alunoInativoId = null;
+
+      document.getElementById("nome").value = resultado.nome;
+      document.getElementById("turma").value = resultado.turma;
+      document.getElementById("telefone").value = resultado.telefone || "";
+
+      document.getElementById("matricula").value = resultado.matricula;
+    } catch (erro) {
+      console.error(erro);
+
+      mostrarErro("Ocorreu um erro ao tentar reativar o aluno.");
+    }
+  }
 </script>
 
 {% endblock %}

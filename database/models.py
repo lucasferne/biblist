@@ -55,6 +55,12 @@ class Aluno(db.Model):
         nullable=True
     )
 
+    ativo = db.Column(
+    db.Boolean,
+    default=True,
+    nullable=False
+)
+
 
 class Emprestimo(db.Model):
     __tablename__ = "emprestimos"

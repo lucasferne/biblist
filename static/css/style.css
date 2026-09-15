@@ -201,30 +201,30 @@ p {
 }
 
 .sidebar-logo {
-    min-width: 0;
-    flex: 1;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 12px;
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
 }
 
 .sidebar-logo-icone {
-    flex-shrink: 0;
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
 }
 
 .sidebar-logo-icone img {
-    max-width: 36px;
-    max-height: 36px;
-    width: auto;
-    height: auto;
-    object-fit: contain;
+  max-width: 36px;
+  max-height: 36px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
 }
 
 .sidebar-logo-icone svg {
@@ -469,21 +469,21 @@ body.sidebar-recolhida .sidebar-menu-titulo {
 }
 
 body.sidebar-recolhida .sidebar-cabecalho {
-    padding: 0 4px;
+  padding: 0 4px;
 }
 
 body.sidebar-recolhida .sidebar-logo {
-    justify-content: flex-start;
+  justify-content: flex-start;
 }
 
 body.sidebar-recolhida .sidebar-logo-icone {
-    margin-left: 0;
+  margin-left: 0;
 }
 
 body.sidebar-recolhida .sidebar-botao {
-    position: absolute;
-    right: 4px;
-    top: 15px;
+  position: absolute;
+  right: 4px;
+  top: 15px;
 }
 
 body.sidebar-recolhida .sidebar-link {
@@ -2584,15 +2584,16 @@ body.modal-aberto {
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 100%;
+    margin-bottom: 16px;
 }
 
 .login-logo img {
     display: block;
-    width: auto;
-    max-width: 80px;
+    width: 80px;
     height: 80px;
+    max-width: 80px;
     object-fit: contain;
-    align-items: center;
 }
 
 .login-titulo {
@@ -3659,9 +3660,9 @@ select.editar-livro-input {
 }
 
 .configuracoes-logo-preview {
-    display: block;
-    width: auto;
-    max-width: 180px;
-    max-height: 100px;
-    object-fit: contain;
+  display: block;
+  width: auto;
+  max-width: 180px;
+  max-height: 100px;
+  object-fit: contain;
 }

@@ -302,7 +302,7 @@ Detalhes do Empréstimo - Biblioteca
   function abrirComprovante() {
     const url = "/emprestimos/pdf/{{ emprestimo.id }}";
 
-    window.open(url, "_blank");
+    window.location.href = url;
   }
 </script>
 

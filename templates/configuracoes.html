@@ -18,139 +18,122 @@ endblock %} {% block content %}
     </div>
   </header>
 
-<section class="secao">
-  <div class="secao-cabecalho">
-    <div>
-      <h2 class="secao-titulo">Personalização</h2>
+  <section class="secao">
+    <div class="secao-cabecalho">
+      <div>
+        <h2 class="secao-titulo">Personalização</h2>
 
-      <p class="secao-subtitulo">
-        Defina o nome e a cor principal do sistema.
-      </p>
-    </div>
-  </div>
-
-  <form
-    action="{{ url_for('configuracoes') }}"
-    method="POST"
-    enctype="multipart/form-data"
-  >
-    <div class="formulario-grid">
-      <div class="campo">
-        <label for="nome_biblioteca">
-          Nome da biblioteca
-        </label>
-
-        <input
-          type="text"
-          id="nome_biblioteca"
-          name="nome_biblioteca"
-          value="{{ configuracao.nome_biblioteca }}"
-          maxlength="150"
-          required
-        />
-      </div>
-
-      <div class="campo">
-        <label for="cor_principal">
-          Cor principal
-        </label>
-
-        <input
-          type="color"
-          id="cor_principal"
-          name="cor_principal"
-          value="{{ configuracao.cor_principal }}"
-          required
-        />
+        <p class="secao-subtitulo">
+          Defina o nome e a cor principal do sistema.
+        </p>
       </div>
     </div>
 
-    <div class="formulario-acoes">
-      <button
-        type="submit"
-        class="botao botao-principal"
-      >
-        <i data-lucide="save"></i>
-        Salvar configurações
-      </button>
+    <form
+      action="{{ url_for('configuracoes') }}"
+      method="POST"
+      enctype="multipart/form-data"
+    >
+      <div class="formulario-grid">
+        <div class="campo">
+          <label for="nome_biblioteca"> Nome da biblioteca </label>
+
+          <input
+            type="text"
+            id="nome_biblioteca"
+            name="nome_biblioteca"
+            value="{{ configuracao.nome_biblioteca }}"
+            maxlength="150"
+            required
+          />
+        </div>
+
+        <div class="campo">
+          <label for="cor_principal"> Cor principal </label>
+
+          <input
+            type="color"
+            id="cor_principal"
+            name="cor_principal"
+            value="{{ configuracao.cor_principal }}"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="formulario-acoes">
+        <button type="submit" class="botao botao-principal">
+          <i data-lucide="save"></i>
+          Salvar configurações
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <section class="secao">
+    <div class="secao-cabecalho">
+      <div>
+        <h2 class="secao-titulo">Logo da biblioteca</h2>
+
+        <p class="secao-subtitulo">
+          Escolha uma imagem para representar a biblioteca no sistema e na tela
+          de login.
+        </p>
+      </div>
     </div>
-  </form>
-</section>
 
-<section class="secao">
-  <div class="secao-cabecalho">
-    <div>
-      <h2 class="secao-titulo">Logo da biblioteca</h2>
+    <form
+      action="{{ url_for('configuracoes') }}"
+      method="POST"
+      enctype="multipart/form-data"
+    >
+      <div class="campo">
+        <label for="logo">Selecionar logo</label>
 
-      <p class="secao-subtitulo">
-        Escolha uma imagem para representar a biblioteca no sistema e na tela
-        de login.
-      </p>
-    </div>
-  </div>
+        <input
+          type="file"
+          id="logo"
+          name="logo"
+          accept=".png,.jpg,.jpeg,.webp"
+        />
+      </div>
 
-  <form
-    action="{{ url_for('configuracoes') }}"
-    method="POST"
-    enctype="multipart/form-data"
-  >
-    <div class="campo">
-      <label for="logo">Selecionar logo</label>
+      {% if configuracao.logo %}
 
-      <input
-        type="file"
-        id="logo"
-        name="logo"
-        accept=".png,.jpg,.jpeg,.webp"
-      />
-    </div>
+      <div class="campo">
+        <label>Logo atual</label>
+
+        <div>
+          <img
+            src="{{ url_for('servir_upload', nome=configuracao.logo) }}?v=1"
+            alt="Logo preview"
+          />
+        </div>
+      </div>
+
+      {% endif %}
+
+      <div class="formulario-acoes">
+        <button type="submit" class="botao botao-principal">
+          <i data-lucide="upload"></i>
+          Salvar logo
+        </button>
+      </div>
+    </form>
 
     {% if configuracao.logo %}
 
-    <div class="campo">
-      <label>Logo atual</label>
-
-      <div>
-        <img
-          src="{{ url_for('static', filename='uploads/' + configuracao.logo) }}"
-          alt="Logo atual da biblioteca"
-          class="configuracoes-logo-preview"
-        />
-      </div>
+    <div class="formulario-acoes">
+      <form action="{{ url_for('remover_logo') }}" method="POST">
+        <button type="submit" class="botao botao-erro">
+          <i data-lucide="trash-2"></i>
+          Remover logo
+        </button>
+      </form>
     </div>
 
     {% endif %}
-
-    <div class="formulario-acoes">
-      <button
-        type="submit"
-        class="botao botao-principal"
-      >
-        <i data-lucide="upload"></i>
-        Salvar logo
-      </button>
-    </div>
-  </form>
-
-  {% if configuracao.logo %}
-
-  <div class="formulario-acoes">
-    <form
-      action="{{ url_for('remover_logo') }}"
-      method="POST"
-    >
-      <button
-        type="submit"
-        class="botao botao-erro"
-      >
-        <i data-lucide="trash-2"></i>
-        Remover logo
-      </button>
-    </form>
-  </div>
-
-  {% endif %}
-</section>
+  </section>
 </div>
 
 {% endblock %}

@@ -48,7 +48,7 @@
               {% if configuracao and configuracao.logo %}
 
               <img
-                src="{{ url_for('static', filename='uploads/' + configuracao.logo) }}"
+                src="{{ url_for('servir_upload', nome=configuracao.logo) }}?v=1"
                 alt="Logo da biblioteca"
               />
 
