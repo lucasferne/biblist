@@ -215,7 +215,30 @@ O instalador do Biblist é distribuído separadamente através das releases do p
 
 ## Screenshots
 
-As imagens da aplicação serão adicionadas nesta seção para apresentar as principais telas do sistema.
+### Login
+
+![Tela de login](docs/screenshots/login.png)
+
+### Dashboard
+
+![Dashboard](docs/screenshots/dashboard.png)
+
+### Alunos
+
+![Dashboard de alunos](docs/screenshots/dashboard-alunos.png)
+
+### Cadastro de livros
+
+![Cadastro de livros](docs/screenshots/cadastro-livros.png)
+
+### Cadastro de empréstimos
+
+![Cadastro de empréstimos](docs/screenshots/cadastro-emprestimos.png)
+
+### Customização
+
+![Tela de customização](docs/screenshots/customizacao.png)
+
 
 ## Licença
 
