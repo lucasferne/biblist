@@ -1401,6 +1401,7 @@ def buscar_aluno():
         "encontrado": True,
         "id": aluno.id,
         "matricula": aluno.matricula,
+        "tipo": aluno.tipo,
         "nome": aluno.nome,
         "turma": aluno.turma,
         "telefone": aluno.telefone or ""
@@ -1428,7 +1429,8 @@ def reativar_aluno(id):
             "matricula": aluno.matricula,
             "nome": aluno.nome,
             "turma": aluno.turma,
-            "telefone": aluno.telefone or ""
+            "telefone": aluno.telefone or "",
+            "tipo": aluno.tipo
         }
 
     except Exception:
@@ -1473,6 +1475,11 @@ def cadastrar_emprestimo():
         ""
     ).strip()
 
+    tipo = request.form.get(
+        "tipo",
+        ""
+    ).strip()
+
     livro_id = request.form.get(
         "livro_id",
         ""
@@ -1514,6 +1521,15 @@ def cadastrar_emprestimo():
 
         flash(
             "A turma do aluno é obrigatória.",
+            "error"
+        )
+
+        return redirect("/emprestimos")
+
+    if tipo not in ["Tecnico", "Faculdade"]:
+
+        flash(
+            "O tipo de aluno é obrigatório.",
             "error"
         )
 
@@ -1651,6 +1667,7 @@ def cadastrar_emprestimo():
             nome=nome,
             turma=turma,
             telefone=telefone or None,
+            tipo=tipo,
             ativo=True
         )
 
@@ -2146,6 +2163,11 @@ def editar_aluno(id):
             ""
         ).strip()
 
+        tipo = request.form.get(
+            "tipo",
+            ""
+        ).strip()
+
         turma = request.form.get(
             "turma",
             ""
@@ -2160,6 +2182,20 @@ def editar_aluno(id):
 
             flash(
                 "Matrícula e nome são obrigatórios.",
+                "error"
+            )
+
+            return redirect(
+                url_for(
+                    "editar_aluno",
+                    id=aluno.id
+                )
+            )
+
+        if tipo not in ["Tecnico", "Faculdade"]:
+
+            flash(
+                "O tipo de aluno é obrigatório.",
                 "error"
             )
 
@@ -2192,6 +2228,8 @@ def editar_aluno(id):
         aluno.matricula = matricula
 
         aluno.nome = nome
+
+        aluno.tipo = tipo
 
         aluno.turma = turma
 

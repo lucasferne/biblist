@@ -59,7 +59,9 @@ class Aluno(db.Model):
     db.Boolean,
     default=True,
     nullable=False
-)
+    )
+
+    tipo = db.Column(db.String(20), nullable=False)
 
 
 class Emprestimo(db.Model):

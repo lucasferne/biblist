@@ -885,6 +885,7 @@ body.sidebar-recolhida .sidebar-sair {
   text-align: left;
 
   border-bottom: 1px solid var(--cor-borda);
+  color: var(--cor-texto);
 }
 
 .tabela th {
@@ -897,7 +898,7 @@ body.sidebar-recolhida .sidebar-sair {
 }
 
 .tabela td {
-    color: var(--cor-texto);
+    color: var(--cor-texto) !important;
     font-size: 14px;
 }
 
@@ -1674,6 +1675,7 @@ body.sidebar-recolhida .sidebar-sair {
 
 .tabela-alunos td {
   vertical-align: middle;
+  color: var(--cor-texto) !important;
 }
 
 .tabela-alunos td:first-child {

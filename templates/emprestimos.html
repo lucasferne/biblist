@@ -94,6 +94,16 @@
           </div>
 
           <div class="formulario-grupo">
+            <label for="tipo">Tipo de aluno</label>
+
+            <select id="tipo" name="tipo" required>
+              <option value="">Selecione o tipo</option>
+              <option value="Tecnico">Aluno do técnico</option>
+              <option value="Faculdade">Aluno da faculdade</option>
+            </select>
+          </div>
+
+          <div class="formulario-grupo">
             <label for="turma"> Turma </label>
 
             <input
@@ -676,6 +686,8 @@
 
   const nomeInput = document.getElementById("nome");
 
+  const tipoInput = document.getElementById("tipo");
+
   const turmaInput = document.getElementById("turma");
 
   const telefoneInput = document.getElementById("telefone");
@@ -716,6 +728,8 @@
 
           nomeInput.value = aluno.nome || "";
 
+          tipoInput.value = aluno.tipo || "";
+
           turmaInput.value = aluno.turma || "";
 
           telefoneInput.value = aluno.telefone || "";
@@ -723,6 +737,7 @@
           nomeInput.readOnly = true;
           turmaInput.readOnly = true;
           telefoneInput.readOnly = true;
+          tipoInput.disabled = true;
 
           return;
         }
@@ -742,10 +757,13 @@
           nomeInput.value = "";
           turmaInput.value = "";
           telefoneInput.value = "";
+          tipoInput.value = "";
+
 
           nomeInput.readOnly = false;
           turmaInput.readOnly = false;
           telefoneInput.readOnly = false;
+          tipoInput.disabled = false;
 
           return;
         }
@@ -759,10 +777,12 @@
         nomeInput.value = "";
         turmaInput.value = "";
         telefoneInput.value = "";
+        tipoInput.value = "";
 
         nomeInput.readOnly = false;
         turmaInput.readOnly = false;
         telefoneInput.readOnly = false;
+        tipoInput.disabled = false;
 
         nomeInput.focus();
       } catch (erro) {
@@ -846,6 +866,8 @@
 
       telefoneInput.value = resultado.telefone || "";
 
+      tipoInput.value = resultado.tipo || "";
+
       /*
        * Mantém os campos editáveis.
        */
@@ -853,6 +875,7 @@
       nomeInput.readOnly = false;
       turmaInput.readOnly = false;
       telefoneInput.readOnly = false;
+      tipoInput.disabled = false;
 
       /*
        * O empréstimo NÃO é enviado automaticamente.

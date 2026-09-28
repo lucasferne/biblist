@@ -58,6 +58,17 @@ endblock %} {% block content %}
       </div>
 
       <div class="detalhes-aluno-item">
+        <span class="detalhes-aluno-label">Tipo de aluno</span>
+
+        <span class="detalhes-aluno-valor">
+          {% if aluno.tipo == "Tecnico" %} Aluno do técnico {% elif aluno.tipo
+          == "Faculdade" %} Aluno da faculdade {% else %}
+          <span class="texto-suave">—</span>
+          {% endif %}
+        </span>
+      </div>
+
+      <div class="detalhes-aluno-item">
         <span class="detalhes-aluno-label"> Nome </span>
 
         <span class="detalhes-aluno-valor"> {{ aluno.nome }} </span>
